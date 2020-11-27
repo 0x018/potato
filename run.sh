@@ -1,4 +1,18 @@
 #!/bin/bash
+function killAll { 
+  echo ""
+  echo "cpid:${dir}cpid"
+  grandson=$(cat "${dir}cpid")
+  kill -9 $grandson
+  echo "kill $grandson"
+  # kill -9 "$cpid"
+  # "$cpid2"
+  # echo "" > "${dir}cpid"
+  rm -rf "${dir}"
+}
+
+trap killAll  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+# echo "$$ " > "${dir}cpid"
 while [[ $# -ge 1 ]]; do
 	case $1 in
 		-open|--open )
@@ -38,15 +52,20 @@ fi
 # 编译前端
 # echo "编译前端"
 ./build.sh -config "$dir" &
-
+cpid="$!"
 # 运行服务器
 # echo "运行服务器"
-./dev.serve/./run.sh -config "$dir" &
-
+./dev.serve/run.sh -config "$dir" &
+cpid2="$!"
+# echo "cpid build.sh $cpid"
 # 打开浏览器
 # echo "打开浏览器"
 
 $($cli) & 
+
+# sleep 1s
+wait $cpid $cpid2
+# sleep 10s
 
 else
     echo "Need to install deno !!"

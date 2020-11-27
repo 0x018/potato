@@ -27,7 +27,7 @@
 
 </script>
 <header>
-	
+
 </header>
 {#await load(page)}
 	<p>...load...</p>

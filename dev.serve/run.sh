@@ -23,8 +23,13 @@ fi
 deno run --unstable \
 --allow-read --allow-net --allow-run \
 --allow-env --no-check --import-map "${dir}imports.json" \
-./dev.serve/server.ts "${dir}" 
+./dev.serve/server.ts "${dir}" &
 
+cpid=$!
+# echo "cpid buils.js $cpid"
+echo "$cpid " >> "${dir}cpid"
+
+wait $cpid
 # # # --no-check --unstable --watch
 # read
 # else

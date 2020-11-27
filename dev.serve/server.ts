@@ -7,8 +7,7 @@ import { reSetConsole } from "@root/dev.serve/console.ts";
 import { loadJs } from "@root/dev.serve/loadjs.ts";
 
 reSetConsole();
-console.success("potato", "Good morning", Deno.args);
-
+console.success("Good morning");
 // load config
 const config: any = await loadJson(Deno.args[0] + "config.json");
 // console.info('config', config);

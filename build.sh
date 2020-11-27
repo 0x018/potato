@@ -23,7 +23,15 @@ fi
 deno run \
 --unstable --allow-read --allow-write --allow-run --allow-net \
 --allow-env --no-check --import-map "${dir}imports.json" \
-./build/build.js "${dir}"
+./build/build.js "${dir}" &
 
+cpid=$!
+# echo "cpid buils.js $cpid"
+echo "$cpid " >> "${dir}cpid"
+# function killAll {
+#   kill -9 "$cpid"
+#   echo "_kill $cpid buildjs"
+# }
+wait $cpid
 # exit 0
-echo "build end"
+# echo "build end"

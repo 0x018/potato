@@ -53,10 +53,10 @@ async function compilePage(src, name) {
   let fileName = src.split('/').pop().split('.').shift()
   for (let i = 0; i < code.length; i++) {
     let item = code[i];
-    console.log("read file ", item.src)
+    // console.log("read file ", item.src)
     let source = await getSvelte(item.src); // getSvelte 
     // item.name = item.name || item.;
-    console.log("page source", source)
+    // console.log("page source", source)
     const result = svelte.compile(source, {
       format: "esm",
       generate: "dom",
@@ -74,7 +74,7 @@ async function compilePage(src, name) {
     })));
     // console.log("deps",deps)
     code = code.concat(deps);
-    console.log("compilePage", i, code.length);
+    // console.log("compilePage", i, code.length);
   }
 
   let text = code.map(v => `let ${v.name} = (function () {\n  ${removeImportExport(v.code).replace(/\n/g, "\n  ")};\n  return ${v.name};\n})();`).reverse().join("\n\n")
@@ -101,7 +101,7 @@ function getImport(str) {
 }
 
 async function getSvelte(src) {
-  console.log("getSvelte", src)
+  // console.log("getSvelte", src)
   let f = (await Deno.lstat(src));
   if (f.isFile) {
     if (/\.svelte$/.test(src))
@@ -109,7 +109,7 @@ async function getSvelte(src) {
     else return "";
   } else {
     let name = src.split("/");
-    console.log("name", name)
+    // console.log("name", name)
     // name.pop();
     name = name.pop();
     let html = (await getTextNoError(src + "/" + name + ".html")) || "";
@@ -121,7 +121,7 @@ async function getSvelte(src) {
     while (r = reg.exec(js)) {
       // cName.push(r[1]);
       let n = r[1];
-      console.log("rename import", n);
+      // console.log("rename import", n);
       let n2 = n.replace(/^./, m => m.toUpperCase());
       html = html.replaceAll(`<${n}>`, `<${n2}>`);
       html = html.replaceAll(`<${n}/>`, `<${n2}/>`);
