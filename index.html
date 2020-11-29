@@ -10,8 +10,29 @@
 	<link rel='stylesheet' href='global.css'>
 
 	<script defer src='index.js'></script>
+
+	<script src="https://unpkg.com/rxjs@6.6.0/bundles/rxjs.umd.min.js"></script>
+	<script>
+		var wsUrl = `ws://localhost:3000/`;
+		console.log('ws url', wsUrl);
+
+		let callback={
+				refresh:()=>{ window.location.reload();}
+			}
+    var subject = rxjs.webSocket.webSocket({
+      url: wsUrl,
+      // deserializer: event => event.data, // 接收的结果自动解析
+      serializer: (value) => JSON.stringify(value), // 发送的数据自动打包
+		});
+		subject.subscribe(
+      data => {
+        console.info('message received: ' + data);
+        callback[data](data);
+			});
+			
+			subject.next({id:'dev'})
+	</script>
 </head>
 <body>
-
 </body>
 </html>

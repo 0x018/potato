@@ -231,8 +231,8 @@ fileWatch.pipe(
     } else if(val.startsWith(config.page + "/")){
       createPageFile();
     } else copyIndexFile();
-    fetch(`http://localhost:${config.port}/refresh/`).then(v=>{
-
+    fetch(`http://localhost:${config.port}/refresh/`,{method:"POST"}).then(v=>{
+      // console.log("refresh",v)
     });
     fileWatch.next(null);
 })

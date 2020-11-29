@@ -10,17 +10,17 @@ export function send(req, key, task) {
     // if () {
     let staticFile = req.url.replace("/", "").split('?')[0] || "index.html";
     console.log('get file', staticFile)
-    if(/\d{3}\.js/.test(staticFile)) {
-      req.respond({
-        status: 304,
-        header:new Headers({
-          // "cache-control": "max-age=604800",
-          // "last-modified":
-          "etag": 'W/"215f2c03150740ce0765337fd7e070f1"'
-        }),
-        // body:"var a='a';" 
-      });
-    } else
+    // if(/\d{3}\.js/.test(staticFile)) {
+    //   req.respond({
+    //     status: 304,
+    //     header:new Headers({
+    //       // "cache-control": "max-age=604800",
+    //       // "last-modified":
+    //       "etag": 'W/"215f2c03150740ce0765337fd7e070f1"'
+    //     }),
+    //     // body:"var a='a';" 
+    //   });
+    // } else
     rxjs.from(Deno.open(runPath + staticFile)).pipe(rxjs.operators.catchError(val => of(`404`)))
     .subscribe(text => {
       req.respond({
