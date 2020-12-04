@@ -1,0 +1,50 @@
+.row{
+  width:100%;
+  margin-top: 8px;
+}
+.col{
+  /* width:auto; */
+  float:left;
+  
+}
+button.select{
+  margin:8px 0 0 8px;
+}
+.form{
+  /* width:460px; */
+  /* min-width:460px; */
+}
+.view{
+  /* width:calc(100% - 460px); */
+}
+.clear{
+  clear: both;
+}
+.box{
+  height: 324px;
+  /* width:577px; */
+  position: relative;
+  border:1px solid transparent;
+}
+.box.active{
+  border-color:red;
+}
+.select-box{
+  width: 1920px;
+  height:1080px;
+  /* scale:0.3; */
+  transform: scale3d(0.3, 0.3, 0.3);
+  transform-origin: 0 0;
+  background-color: #e0e0e0;
+}
+.desc{
+  position: absolute;
+  top:0;
+  left:0;
+  margin-left: 585px;
+  width:calc(100% - 585px);
+}
+.box~.modal-btn{
+  margin-top: 0.5em;
+  float:right;
+}

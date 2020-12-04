@@ -1,0 +1,15 @@
+
+{@html girdStyle}
+
+<div class="preview container grid-{id}" class:empty="{grid?.length==0}">
+  {#each grid as item, i}
+  <div class="item item-{item.index}">
+    {#if item?.component}
+    <svelte:component this={item?.component} {...item?.data}></svelte:component>
+    {/if}
+    {#if item?.code}
+    <svelte:component this={Htag} code="{item?.code}" {...item?.data}></svelte:component>
+    {/if}
+  </div>
+  {/each}
+</div>

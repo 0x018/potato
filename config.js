@@ -11,7 +11,7 @@
             "@root/": `${ctx.cwd}/`, // serve 的根路径
         },
         "copy":["index.html", "global.css", "favicon.png"],
-        "app":"app.svelte",
+        "app":"app",
         "page":"page",
         "dist":"dist"
 })

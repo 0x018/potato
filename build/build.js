@@ -29,25 +29,27 @@ watchFile();
 
 function removeImportExport(str) {
   let start = str.indexOf("\nfunction");
+  let start2 = str.indexOf("\nclass");
+  start = (start == -1 ? start2 : start);
   let end = str.indexOf("\nexport default");
   return str.substring(start, end).trim();
 }
 
 
-async function compileApp(src, name) {
+// async function compileApp(src, name) {
 
-  let source = await Deno.readTextFile(src);
-  const result = svelte.compile(source, {
-    format: "esm",
-    generate: "dom",
-    dev: false,
-    name: name,
-  });
-  return result.js.code;
-}
+//   let source = await Deno.readTextFile(src);
+//   const result = svelte.compile(source, {
+//     format: "esm",
+//     generate: "dom",
+//     dev: false,
+//     name: name,
+//   });
+//   return result.js.code;
+// }
 
-async function compilePage(src, name) {
-  let page = config.page + "/";
+async function compilePage(src, name, flag) {
+  flag = flag || false;
   // let i = 0;
   let code = [{ src: src, name: name, code: null }];
   let fileName = src.split('/').pop().split('.').shift()
@@ -56,7 +58,7 @@ async function compilePage(src, name) {
     // console.log("read file ", item.src)
     let source = await getSvelte(item.src); // getSvelte 
     // item.name = item.name || item.;
-    // console.log("page source", source)
+    // console.log("compile ",name, source)
     const result = svelte.compile(source, {
       format: "esm",
       generate: "dom",
@@ -67,7 +69,7 @@ async function compilePage(src, name) {
     // if(item.name=="edit"||)
     // console.log("page ",item.name,item.code)
     let deps = getImport(item.code).flatMap(v => (code.find(c => (c.src === v)) ? [] : ({
-      src: item.src + v.replace(".", ""), //+"/",  // todo
+      src: item.src + "/" + v,////.replace(".", ""), //+"/",  // todo
       code: null,
       name: v.split('/').pop().split('.').shift().replace(/^./, str => str.toUpperCase())
 
@@ -79,7 +81,13 @@ async function compilePage(src, name) {
 
   let text = code.map(v => `let ${v.name} = (function () {\n  ${removeImportExport(v.code).replace(/\n/g, "\n  ")};\n  return ${v.name};\n})();`).reverse().join("\n\n")
   // console.log("compilePage writeTextFile", buildFile + "page/" + fileName + ".js")
-  Deno.writeTextFile(outputFile + page + fileName + ".js", text);
+  if (!flag) {
+    let page = config.page + "/";
+    Deno.writeTextFile(outputFile + page + fileName + ".js", text);
+  } else {
+    console.log("compilePage text", text.length)
+  }
+  return new Promise(res => res(text));
 }
 
 
@@ -101,17 +109,23 @@ function getImport(str) {
 }
 
 async function getSvelte(src) {
-  // console.log("getSvelte", src)
-  let f = (await Deno.lstat(src));
-  if (f.isFile) {
+  console.log("getSvelte", src)
+  let f;
+  try {
+
+    f = (await Deno.stat(src));
+  } catch (e) {
+
+  }
+  if (f && f.isFile) {
     if (/\.svelte$/.test(src))
       return await Deno.readTextFile(src);
     else return "";
   } else {
     let name = src.split("/");
-    // console.log("name", name)
     // name.pop();
     name = name.pop();
+    console.log("getSvelte name", name, src + "/" + name + ".html");
     let html = (await getTextNoError(src + "/" + name + ".html")) || "";
     let js = (await getTextNoError(src + "/" + name + ".js")) || "";
     let css = (await getTextNoError(src + "/" + name + ".css")) || "";
@@ -123,7 +137,7 @@ async function getSvelte(src) {
       let n = r[1];
       // console.log("rename import", n);
       let n2 = n.replace(/^./, m => m.toUpperCase());
-      html = html.replaceAll(`<${n}>`, `<${n2}>`);
+      html = html.replaceAll(`<${n}`, `<${n2}`);
       html = html.replaceAll(`<${n}/>`, `<${n2}/>`);
       html = html.replaceAll(`</${n}>`, `</${n2}>`);
     }
@@ -133,7 +147,7 @@ async function getSvelte(src) {
 }
 
 async function getTextNoError(src) {
-  console.log("getTextNoError", src)
+  // console.log("getTextNoError", src)
   try {
     return await Deno.readTextFile(src);
   } catch (e) {
@@ -158,13 +172,15 @@ async function createAppFile() {
   [indexjs, exportCode] = indexjs.split("\nexport");
 
   exportCode = exportCode.replace(" };", ", load }");
-
+  // exportCode 
   indexjs += `let srt =` + exportCode + ";\n\n";
   indexjs += "// svelte.load.js \n" +
     (await Deno.readTextFile(buildPath + svelteLoad))
-      .replace(/\/\*context\.+\*\//, "let" + exportCode + " = srt;") + "\n";
-
-  let appCode = removeImportExport(await compileApp(appFile, 'app'));
+      .replace(/\/\* context\,.+\*\//, "let" + exportCode + " = srt;const { document: document_1 } = globals;\n") + "\n";
+  // indexjs += "";
+  let appCode = await compilePage(appFile, 'app', true)
+  // removeImportExport(  );
+  // console.log("appCode",appCode)
   indexjs += "// app.svelte \n" + appCode + "\n";
   indexjs += "// app run \n" +
     "const apprun = new app({\n" +
@@ -209,7 +225,7 @@ async function watchFile() {
   for await (const event of watcher) {
     console.log(Date.now() + ">>>> event", event);
     // { kind: "create", paths: [ "/foo.txt" ] }
-    if (["create", "modify", "remove"].find(v=>(v==event.kind)))
+    if (["create", "modify", "remove"].find(v => (v == event.kind)))
       (event.paths).forEach(v => {
         fileWatch.next(v);
       });
@@ -224,16 +240,19 @@ fileWatch.pipe(
   // rx.operators.map(v=>v.filter(a=>!!a)),
   // rx.operators.debounceTime(800),
   // rx.operators.switchMap(() => fileWatch.pipe(rx.operators.scan((acc, curr) => acc.add(curr), new Set())))
-  ).subscribe(val => {
-    console.log("do ",val)
-    if(val==config.app){
-      createAppFile();
-    } else if(val.startsWith(config.page + "/")){
-      createPageFile();
-    } else copyIndexFile();
-    fetch(`http://localhost:${config.port}/refresh/`,{method:"POST"}).then(v=>{
+).subscribe(val => {
+  console.log("do ", val)
+  if (val == config.app) {
+    createAppFile();
+  } else if (val.indexOf("/" + config.page + "/") > -1) {
+    createPageFile();
+  } else copyIndexFile();
+  setTimeout(() => {
+    fetch(`http://localhost:${config.port}/refresh/`, { method: "POST" }).then(v => {
       // console.log("refresh",v)
     });
-    fileWatch.next(null);
+  }, 500);
+
+  fileWatch.next(null);
 })
 

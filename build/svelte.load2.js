@@ -18,7 +18,7 @@ function load(url) {
         eval(
            `(function (srt) {\n` +
            `  'use strict';\n` +
-           `  /*context, don't remove */\n` +
+           `  /* context, don't remove */\n` +
            `  ;${d};\n` +
            // `  var page = page||null;\n`+ // 防报错
            `  ccc=(page);\n` +

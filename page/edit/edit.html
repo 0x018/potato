@@ -1,3 +1,39 @@
-<h1>{name} page!</h1>
-<E2></E2>
-<e2></e2>
+<div class="row">
+  <div class="col line">
+    <button class="select" on:click="{open}">常用布局</button>
+  </div>
+  <div class="col line">
+    <!-- 布局处理 -->
+    <layout gtr="{gridEdit.rows}" width="{gridEdit.width}" height="{gridEdit.height}" gtc="{gridEdit.columns}"></layout>
+  </div>
+  <div class="col line">
+    <!-- 组件选择 -->
+
+  </div>
+  <div class="col line">
+    <input class="next" type="button" value="下一步" on:click={()=>{step=3}}>
+  </div>
+  <div class="clear"></div>
+</div>
+
+<modal show="{show}" let:data={md} let:set={sd}>
+  <p class="title">布局选择</p>
+  <!-- <p class="title">{JSON.stringify(md)}</p> -->
+  {#each layoutArr as item,index}
+  <div class="box" class:active="{ (md?.active == index) }" on:click="{()=>{ sd({active:index,data:item})} }">
+    <!-- <div class="col" > -->
+    <div class="select-box">
+      <!-- {JSON.stringify(item,null,4)} -->
+      <grid gtr="{item.rows}" width="{item.width}" height="{item.height}" gtc="{item.columns}"
+        count="{item.count}" span="{item.span}" scale="{item.scalc}"></grid>
+    </div>
+    <div class="desc">
+      {@html item.desc}
+    </div>
+    <!-- </div> -->
+  </div>
+  {/each}
+
+  <button class="modal-btn" disabled="{!md}" on:click="{()=>{selectLayout(md.data||{});}}">确定</button>
+  <div class="clear"></div>
+</modal>

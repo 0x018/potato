@@ -1,0 +1,9 @@
+<div class="preview container grid-{classSuff}" style="transform:scale3D({scale},{scale},{scale});">
+  {@html `<style>${styleTag}</style>`}
+  {#each grid as item, i}
+  <div class="item item-{item.index} item-bg">
+    <p class="index">{item.index}</p>  
+    <slot></slot>
+  </div>
+  {/each}
+</div>

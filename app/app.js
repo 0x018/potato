@@ -1,5 +1,4 @@
-<script>
-	import load from "svelte";
+import { load } from "svelte";
 
 	let page = null;
 	let search={};
@@ -24,15 +23,3 @@
 
 	window.addEventListener("hashchange", getUrl, false);
 	getUrl();
-
-</script>
-<header>
-
-</header>
-{#await load(page)}
-	<p>...load...</p>
-{:then value}
-	<svelte:component this={value} {...search}/>
-{:catch error}
-	<p>load failed: {error.message}</p>
-{/await}

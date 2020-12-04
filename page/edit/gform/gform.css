@@ -1,0 +1,76 @@
+button.select{
+  margin-bottom: 0.7em;
+}
+label{
+  display:inline-block;
+  margin:0.1em 0;
+  /* width:100%; */
+}
+/* label::after{
+  content:' ';
+  display:block;
+} */
+.line-wh>label{
+  margin-right: 1em;
+}
+.line-num{
+  margin-top: 0.5em;
+}
+label.indent{
+  margin-left: 1em;
+}
+label.indent .title{
+  margin:0.3em 0 0.2em 0;
+}
+/* label.indent::before{
+  content:' ';
+  display:block;
+} */
+label.indent+label{
+  margin-top: 1em;
+}
+input[type=text]{
+  width:80px;
+}
+input.error:not(:focus){
+  border:1px solid red; 
+}
+.prev{
+  opacity: 0.3;
+} 
+.next{
+}
+.box{
+  height:350px;
+  padding-left:8px;
+  padding-top:8px;
+  position: relative;
+}
+.modal-layout{
+  position: absolute;
+  top:0;
+  left:0;
+  padding: 8px;
+  /*  */
+  width:100vw;
+  /* min-height: 500px; */
+  height:100%;
+  box-sizing: border-box;
+  display: none;
+}
+.mask{
+  position: absolute;
+  top:0;
+  left:0;
+  background-color: rgba(0,0,0,0.2);
+  width:100%;
+  height:100%;
+  z-index: 1;
+}
+.content{
+  position: relative;
+  z-index: 10;
+  background-color: #fff;
+  /* width: 100vw; */
+  height:100%;
+}

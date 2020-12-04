@@ -1,0 +1,43 @@
+<div class="box">
+    <div class="line line-wh">
+        <label>
+            width:
+            <input type=text bind:value={width} on:keyup="{check}">
+        </label>
+        <label>
+            height:
+            <input type=text bind:value={height} on:keyup="{check}">
+        </label>
+    </div>
+    <div class="line line-num"><label>
+            列数:
+            <input class:error="{!colNum}" type=number bind:value={colNum} min=1 step=1 max=20 on:keyup="{check}">
+        </label>
+    </div>
+    <div class="line">
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label class="indent">
+            <p class="title">每列宽度</p>
+            {#each Array(Math.min(maxCol,Math.floor(colNum))).fill(0) as item,i }
+            <input class:error="{showError(columns[i])}" type=text bind:value={columns[i].value} on:keyup="{check}" on:blur="{check}" on:focus="{()=>{columns[i]&&(columns[i].edit=true)}}">
+            {#if (i+1)%5==0} <br>{/if}
+            {/each}
+        </label>
+    </div>
+    <div class="line line-num">
+        <label>
+            行数:
+            <input class:error="{!rowNum}" type=number bind:value={rowNum} min=1 step=1 max=10 on:keyup="{check}">
+        </label>
+    </div>
+    <div class="line">
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label class="indent">
+            <p class="title">每行高度</p>
+            {#each Array(Math.min(maxRow,Math.floor(rowNum))).fill(0) as item,i }
+            <input class:error="{showError(rows[i])}" type=text bind:value={rows[i].value} on:keyup="{check}" on:blur="{check}" on:focus="{()=>{rows[i]&&(rows[i].edit=true)}}">
+            {#if (i+1)%5==0} <br>{/if}
+            {/each}
+        </label>
+    </div>
+</div>

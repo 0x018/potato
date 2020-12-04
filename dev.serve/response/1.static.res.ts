@@ -21,7 +21,7 @@ export function send(req, key, task) {
     //     // body:"var a='a';" 
     //   });
     // } else
-    rxjs.from(Deno.open(runPath + staticFile)).pipe(rxjs.operators.catchError(val => of(`404`)))
+    rxjs.from(Deno.open(runPath + staticFile)).pipe(rxjs.operators.catchError(val => of(`404 `+val)))
     .subscribe(text => {
       req.respond({
         status: 200,
