@@ -1,9 +1,23 @@
-<div class="preview container grid-{classSuff}" style="transform:scale3D({scale},{scale},{scale});">
+<div class="preview container grid-{classSuff}">
   {@html `<style>${styleTag}</style>`}
   {#each grid as item, i}
-  <div class="item item-{item.index} item-bg">
-    <p class="index">{item.index}</p>  
-    <slot></slot>
+  <div class="item item-{item.index} item-bg" style="grid-area: span {item.r} / span {item.c};">
+    <!-- <p class="index">{item.index}</p> -->
+    <!-- <slot item="{item}" change="{()=>{changeGridSpan(i)}}"></slot> -->
+
+  <div class="item-edit {mode}" style="{scaleCalc}">
+      <!-- {JSON.stringify(cell)} -->
+      <p class="index">{item.index}</p>
+      {#if "span-edit"==mode}
+      <label>
+        <input class="span-edit" type=number bind:value={item.c} min=1 step=1 max="{item.mc}">列
+      </label>
+      <label>
+        <input class="span-edit" type=number bind:value={item.r} min=1 step=1 max="{item.mr}">行
+      </label>
+      {/if}
+
+    </div>
   </div>
   {/each}
 </div>

@@ -166,7 +166,7 @@ async function createAppFile() {
   // index js 编译
   let appFile = config.app;
   let sveltejs = "svelte.internal.mjs"; //svelte/internal/index.mjs
-  let svelteLoad = "svelte.load2.js"; //svelte/internal/index.mjs
+  let svelteLoad = "svelte.load.js"; //svelte/internal/index.mjs
 
   let exportCode, indexjs = "\n" + (await Deno.readTextFile(buildPath + sveltejs)).trimEnd();
   [indexjs, exportCode] = indexjs.split("\nexport");

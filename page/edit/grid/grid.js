@@ -1,37 +1,48 @@
 import { onMount } from 'svelte';
+export let mode = "list-item"; // "span-edit" "component-choose"
 export let width = "fit-content";
 export let height = "fit-content";
 export let gtr = "";
 export let gtc = "";
 export let count = null;
+let _calc_count = null;
 export let span = []; // 跨行 跨列
-export let scale = 1;
-// let rowNum = 0;
-// let colNum = 0;
+export let scale = 3.3;
+let rowNum = 0;
+let colNum = 0;
 let grid = [];
 
-$: _watchCount = setGrid() || count;
+$: _watchCount = setGrid() || count + gtr + gtc;
 function setGrid() {
-  let arr = Array(count || 0).fill(0);
+  let arr = Array(_calc_count||count || 0).fill(0);
   grid = arr.map((v, i) => {
     let spanItem = span.find(s => s.index == (i + 1)) || {};
     return grid[i] || {
       index: i + 1,
-      t: null,
-      l: null,
+      t: null,// top 
+      l: null,// left
       r: spanItem.r || 1,
       c: spanItem.c || 1,
+      mc: null, // max-c
+      mr: null, // max-r
     }
   })
 }
 
+
+
+$: __watchStyle = resetStyle() || (width + height + gtr + gtc + span.length);
 let classSuff = (Math.random() + "").replace("0.", "").slice(0, 5);
 let styleTag = null;
 
 onMount(async () => {
+  resetStyle();
+});
+
+function resetStyle() {
   let cssCode = cssCodeInit();
   cssCodeToStyle(cssCode);
-});
+}
 
 function cssCodeInit() {
   let cssCode =
@@ -41,8 +52,8 @@ function cssCodeInit() {
     "/*修改后 ctrl+s 保存并刷新左侧样式 */\n" +
     ".container {\n" +
     "    display: grid;\n" +
-    `    width: ${width ||"fit-content"};\n` +
-    `    height: ${height ||"fit-content"};\n` +
+    `    width: ${width || "fit-content"};\n` +
+    `    height: ${height || "fit-content"};\n` +
     // "    height: auto;\n" +
     "    /*每行高度*/\n" +
     `    grid-template-rows: ${gtr || "auto"};\n` +
@@ -86,19 +97,27 @@ function cssCodeToStyle(cssCode) {
     }).join(',');
   });
   styleTag = csstag;
-  // setTimeout(() => {
-  //   let ele = document.querySelector(".grid-" + classSuff);
-  //   let style = window.getComputedStyle(ele);
+  setTimeout(() => {
+    let ele = document.querySelector(".grid-" + classSuff);
+    let style = window.getComputedStyle(ele);
 
-  //   let calcLen = (str) => {
+    let calcLen = (str) => {
 
-  //     let m1 = str.match(/(\d+)/g) || [];
-  //     let m2 = str.match(/(calc)/g) || [];
-  //     return m1.length - m2.length;
-  //   }
+      let m1 = str.match(/(\d+)/g) || [];
+      let m2 = str.match(/(calc)/g) || [];
+      return m1.length - m2.length;
+    }
 
-  //   rowNum = calcLen(style.gridTemplateRows + "");//
-  //   colNum = calcLen(style.gridTemplateColumns + "");//
-  // }, 100);
+    rowNum = calcLen(style.gridTemplateRows + "");//
+    colNum = calcLen(style.gridTemplateColumns + "");//
+  }, 100);
 }
+// 内部放大
+$:scaleCalc=`transform:scale3d(${1/scale}, ${1/scale}, ${1/scale});width:${scale*100}%;height:${scale*100}%;`;
 
+// function scaleCalc() {
+//   // s= 0.3 * (s||1);
+//   // s = scale * (s || 0.3);
+//   let s = scale;
+//   return 
+// }

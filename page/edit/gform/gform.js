@@ -44,7 +44,10 @@ $: columnResult = columns.slice(0, colNum);
 
 function done() {
     if (next) {
-        next({ rows: rowResult.map(v => (v.value || "").trim()), columns: columnResult.map(v => (v.value || "").trim()) });
+        next({
+            rows: rowResult.map(v => (v.value || "").trim()).join(" "),
+            columns: columnResult.map(v => (v.value || "").trim()).join(" "),
+        });
     }
 }
 
