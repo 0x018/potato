@@ -1,10 +1,12 @@
 import gform from "./gform"
 import modal from "./modal"
 import grid from "./grid"
+import gfill from "./gfill"
 import {
   onMount
 } from "svelte";
 
+let step = 1; // 1,2
 let scale = 0.3;
 let layoutArr = [
   {
@@ -34,18 +36,25 @@ let layoutArr = [
 ];
 
 
-let gridEdit = layoutArr[0];
+let gridEdit = JSON.parse(JSON.stringify(layoutArr[0]));
+let spanEdit = JSON.parse(JSON.stringify(layoutArr[0]));
+let gridFill = {}; // span edit 后的结果
+
 
 function selectLayout(item) {
-  gridEdit = item || {};
-  scale=item.scale||1;
+  gridEdit = JSON.parse(JSON.stringify(item || {}));
+  spanEdit = JSON.parse(JSON.stringify(item || {}));
+  scale = item.scale || 1;
   close();
 }
-
+function gformChange(e) {
+  spanEdit.width = e.width;
+  spanEdit.height = e.height;
+  spanEdit.rows = e.rows;
+  spanEdit.columns = e.columns;
+}
 
 function scaleCalc(s) {
-  // s= 0.3 * (s||1);
-  // s = scale * (s || 0.3);
   return `transform:scale3d(${s}, ${s}, ${s});`
 }
 
@@ -58,18 +67,4 @@ function close() {
   show.next(false);
 }
 
-function changeSpan(i, rc) {
-  let span = JSON.parse(JSON.stringify(
-    gridEdit.span
-  ));
-  let item = span.find(item => (item.index == i));
-  if(item){
 
-    if (rc.r) item.r = rc.r;
-    if (rc.c) item.c = rc.c;
-    gridEdit.span = span.filter(item => ((item.c != 1) && (item.r != 1)))
-  }else{
-    gridEdit.span.push({index:i,r:rc.r||1,c:rc.c||1});
-  }
-  gridEdit=gridEdit;
-}

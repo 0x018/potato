@@ -1,10 +1,10 @@
 import { onMount } from 'svelte';
 import { onDestroy } from 'svelte';
-
+export let max = null;
 let data = null;
 function sd(d){
   data=d;
-  console.log('sd click',data);
+  // console.log('sd click',data);
 }
 // function setData(d){
 //   console.log("aa")

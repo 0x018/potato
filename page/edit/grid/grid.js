@@ -1,4 +1,8 @@
 import { onMount } from 'svelte';
+// import { createEventDispatcher } from 'svelte';
+// const dispatch = (...s)=>console.log(...s)
+// createEventDispatcher();
+export let next;
 export let mode = "list-item"; // "span-edit" "component-choose"
 export let width = "fit-content";
 export let height = "fit-content";
@@ -14,7 +18,8 @@ let grid = [];
 
 $: _watchCount = setGrid() || count + gtr + gtc;
 function setGrid() {
-  let arr = Array(_calc_count||count || 0).fill(0);
+
+  let arr = Array(_calc_count || count || 0).fill(0);
   grid = arr.map((v, i) => {
     let spanItem = span.find(s => s.index == (i + 1)) || {};
     return grid[i] || {
@@ -31,7 +36,7 @@ function setGrid() {
 
 
 
-$: __watchStyle = resetStyle() || (width + height + gtr + gtc + span.length);
+$: __watchStyle = resetStyle() || (width + height + gtr + gtc);// + span.length);
 let classSuff = (Math.random() + "").replace("0.", "").slice(0, 5);
 let styleTag = null;
 
@@ -78,10 +83,15 @@ function cssCodeInit() {
     ".item-1 {\n" +
     "    /*background:red;*/\n" +
     "}\n";
-  cssCode += span.map(v =>
+  let spanCss = span.map(v =>
     `\n.item-${v.index}{\n` +
     `    grid-area: span ${v.r} / span ${v.c};\n}`
   ).join("");
+  if (next) next({ css: cssCode + spanCss, count: _calc_count || count });
+  // dispatch('cssput', { css: cssCode + spanCss, count: _calc_count || count });
+  // if (mode == "list-item") {
+  //   cssCode += spanCss;
+  // }
   return cssCode;
 }
 function cssCodeToStyle(cssCode) {
@@ -113,11 +123,90 @@ function cssCodeToStyle(cssCode) {
   }, 100);
 }
 // 内部放大
-$:scaleCalc=`transform:scale3d(${1/scale}, ${1/scale}, ${1/scale});width:${scale*100}%;height:${scale*100}%;`;
+$: scaleCalc = `transform:scale3d(${1 / scale}, ${1 / scale}, ${1 / scale});width:${scale * 100}%;height:${scale * 100}%;`;
 
-// function scaleCalc() {
-//   // s= 0.3 * (s||1);
-//   // s = scale * (s || 0.3);
-//   let s = scale;
-//   return 
-// }
+function spanChange() {
+  setTimeout(() =>
+    outPutCount(rowNum, colNum, grid), 200
+  );
+}
+
+function outPutCount(gr, gc, span) {
+  console.log("calc count", gr, gc);
+  let cycleCount = 0; // for 计数器,防止死循环
+  let arr = Array(gr * gc).fill(0);
+  let item = Array(gr * gc).fill(0).map((_, i) => {
+    let index = i + 1;
+    let v = span.find(s => s.index == index) || { index: index, r: 1, c: 1 }
+    return {
+      index: v.index,
+      r: v.r,
+      c: v.c,
+    };
+  });
+  let r = 0,
+    c = 0; // 开始 位置
+  function findSpace(r, c, h, w) {
+    let notNull = () => arr[r * gc + c] != 0;
+    let small = () => {
+      if (c + w > gc) return true; // 横排放不下
+      let c2 = c + w;
+      let r2 = Math.min(r + h, gr);
+      for (let j = r; j < r2; j++) {
+        let row = j * gc;
+        for (let i = c; i < c2; i++) {
+          if (arr[row + i] != 0) return true;
+          if (cycleCount++ == 1000) return true;
+        }
+      }
+    };
+    while (notNull() || small()) {
+      c++; // 该位置有值,往右移一格
+      if (c >= gc) {
+        c = 0; // 该行已满,往下移一行
+        r++;
+      }
+      if (r > gr) return [-1, -1];
+      if (cycleCount++ == 1000) return [-1, -1];
+    }
+    // if(c+v[1]<c)
+    return [r, c];
+  }
+  function fill(r, c, h, w, v) {
+    let c2 = c + w;
+    let r2 = Math.min(r + h, gr);
+    for (let j = r; j < r2; j++) {
+      let row = j * gc;
+      for (let i = c; i < c2; i++) {
+        arr[row + i] = v;
+        if (cycleCount++ == 1000) return true;
+      }
+    }
+  }
+
+  let result = [];
+  item.every((v) => {
+    let index = v.index;
+    [r, c] = findSpace(r, c, v.r, v.c);
+    if (r > -1) {
+      fill(r, c, v.r, v.c, index);
+      // console.log("item-" + index, r, c, v);
+      // result.push("span " + v.r + " / " + "span " + v.c);
+      result.push({
+        index: index,
+        t: r, l: c, r: v.r, c: v.c,
+        mc: gc,
+        mr: gr - r,
+      });
+      return true;
+    }
+    if (cycleCount++ == 1000) return;
+    return false;
+  });
+
+  grid = result;
+  _calc_count = result.length;
+  console.log("edit span ", result.length, result)
+}
+
+

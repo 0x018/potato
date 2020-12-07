@@ -1,0 +1,22 @@
+<div class="preview container grid-{classSuff}">
+  {@html `<style>${styleTag}</style>`}
+  {#each grid as item, i}
+  <div class="item item-{item.index} item-bg">
+    <!-- <p class="index">{item.index}</p> -->
+    <!-- <slot item="{item}" change="{()=>{changeGridSpan(i)}}"></slot> -->
+
+    <div class="item-edit" style="{scaleCalc}">
+      <!-- {JSON.stringify(cell)} -->
+      <p class="index">{item.index}</p>
+     
+    </div>
+  </div>
+  {/each}
+</div>
+<div class="hidden">
+  <div class="container grid-{classSuff}" style="{gridGtr}">
+    {#each Array(rowNum*colNum).fill(0) as item, i}
+    <div class="item item-{i+1} item-bg"></div>
+    {/each}
+  </div>
+</div>

@@ -10,10 +10,10 @@
       <p class="index">{item.index}</p>
       {#if "span-edit"==mode}
       <label>
-        <input class="span-edit" type=number bind:value={item.c} min=1 step=1 max="{item.mc}">列
+        <input class="span-edit" type=number bind:value={item.c} on:change="{spanChange}" min=1 step=1 max="{item.mc}">列
       </label>
       <label>
-        <input class="span-edit" type=number bind:value={item.r} min=1 step=1 max="{item.mr}">行
+        <input class="span-edit" type=number bind:value={item.r} on:change="{spanChange}" min=1 step=1 max="{item.mr}">行
       </label>
       {/if}
 

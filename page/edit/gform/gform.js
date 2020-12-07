@@ -45,6 +45,8 @@ $: columnResult = columns.slice(0, colNum);
 function done() {
     if (next) {
         next({
+            width: width,
+            height: height,
             rows: rowResult.map(v => (v.value || "").trim()).join(" "),
             columns: columnResult.map(v => (v.value || "").trim()).join(" "),
         });
@@ -70,7 +72,7 @@ function check() {
             checkFlag = (rowResult.some(c) || columnResult.some(c));
             if (!checkFlag) { done(); }
         }, 100);
-    }, 800);
+    }, 400);
 }
 onMount(() => {
     check();
