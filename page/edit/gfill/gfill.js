@@ -4,24 +4,23 @@ import { onMount } from 'svelte';
 // createEventDispatcher();
 export let next;
 export let style;
+export let scale = 3.3;
 
 // export let count = null;
 let _calc_count = null;
-export let scale = 3.3;
 let rowNum = 0;
 let colNum = 0;
 let grid = [];
 
 function setGrid(count) {
-
+  console.log("setGrid", count)
   let arr = Array(count || 0).fill(0);
   grid = arr.map((v, i) => {
-    // let spanItem = span.find(s => s.index == (i + 1)) || {};
-    // grid[i] || 
     return {
       index: i + 1,
     }
   })
+  grid = grid;
 }
 
 
@@ -35,12 +34,12 @@ onMount(async () => {
 });
 
 function resetStyle() {
-
+  grid = [];
   cssCodeToStyle(style);
-  setTimeout(() => {
-    setGrid(_calc_count);
-  }, 300)
-    ;
+  // setTimeout(() => {
+
+  // }, 300)
+  // ;
   // let span = getSpan();
   // outPutCount(rowNum, colNum, span);
 }
@@ -63,9 +62,9 @@ function cssCodeToStyle(cssCode) {
     let style = window.getComputedStyle(ele);
 
     let calcLen = (str) => {
-
       let m1 = str.match(/(\d+)/g) || [];
       let m2 = str.match(/(calc)/g) || [];
+      console.log("calc len", str, m1.length , m2.length);
       return m1.length - m2.length;
     }
 
@@ -77,16 +76,19 @@ function cssCodeToStyle(cssCode) {
     gridGtr = "grid-template-rows:" + Array(rowNum).fill("10px").join(" ") + repeatStr;
     setTimeout(() => {
       let hidden = Array.from(document.querySelectorAll(".hidden>.grid-" + classSuff + ">.item"));
-      hidden.every((item, i) => {
+      let f = hidden.every((item, i) => {
         item.innerText = "" + window.getComputedStyle(item).height;
         if (window.getComputedStyle(item).height == "0px") {
           _calc_count = i;
           // break;
+          console.log("every height", i);
           return false;
         }
         return true;
       });
-    })
+      if (f) _calc_count = hidden.length;
+      setGrid(_calc_count);
+    }, 100)
 
   }, 100);
 }

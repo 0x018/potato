@@ -113,7 +113,27 @@ div.span-edit{
 }
 .box-fill{
   width:calc(100% - 500px);
-  height:400px;
+  height:700px;
   overflow: auto;
   background-color: #e0e0e0;
+  float:left;
+  margin:0;
+  box-sizing: border-box;
+  padding-right: 10px;
+  margin-bottom: 1em;
 }
+
+.box-vscode{
+  width:500px;
+  height:700px;
+  float:left;
+  margin:0;
+  padding:0;
+  margin-bottom: 1em;
+}
+.line.step-2{
+  margin-top:-8px;
+  padding:8px;
+  /* background-color: #e0e0e0; */
+}
+

@@ -4,30 +4,42 @@ export const sort = 1;
 export const iif = (req) => (req.method === "GET" && req.headers.get("upgrade") != "websocket");
 export function send(req, key, task) {
 
-  let runPath= './'+config.dist+"/run/";
+  let runPath = './' + config.dist + "/run/";
   // response.subscribe((req) => {
-    // req[key].complate = false;
-    // if () {
-    let staticFile = req.url.replace("/", "").split('?')[0] || "index.html";
-    console.log('get file', staticFile)
-    // if(/\d{3}\.js/.test(staticFile)) {
-    //   req.respond({
-    //     status: 304,
-    //     header:new Headers({
-    //       // "cache-control": "max-age=604800",
-    //       // "last-modified":
-    //       "etag": 'W/"215f2c03150740ce0765337fd7e070f1"'
-    //     }),
-    //     // body:"var a='a';" 
-    //   });
-    // } else
-    rxjs.from(Deno.open(runPath + staticFile)).pipe(rxjs.operators.catchError(val => of(`404 `+val)))
+  // req[key].complate = false;
+  // if () {
+  let staticFile = req.url.replace("/", "").split('?')[0] || "index.html";
+
+  // if(/\d{3}\.js/.test(staticFile)) {
+  //   req.respond({
+  //     status: 304,
+  //     header:new Headers({
+  //       // "cache-control": "max-age=604800",
+  //       // "last-modified":
+  //       "etag": 'W/"215f2c03150740ce0765337fd7e070f1"'
+  //     }),
+  //     // body:"var a='a';" 
+  //   });
+  // } else
+  let ct = {
+    "null": null,
+    "html": "text/html",
+    "js": "	application/javascript",
+    "css": "	text/css",
+    "jpeg": "image/jpeg",
+    "png": "image/png",
+    "svg": "text/xml",
+  }[staticFile.split('.').pop() || "null"];
+  ct = !ct ? {} : { "content-type": ct }
+  console.log('get file',staticFile.split('.').pop(), staticFile, ct);
+  rxjs.from(Deno.open(runPath + staticFile)).pipe(rxjs.operators.catchError(val => of(`404 ` + val)))
     .subscribe(text => {
       req.respond({
         status: 200,
-        // headers: new Headers({
-        //   "content-type": "text/html",
-        // }),
+        headers: new Headers({
+          "content-type": "text",
+          ...ct,
+        }),
         body: text,
       });
       req[key].complate = true;
@@ -55,6 +67,6 @@ export function send(req, key, task) {
     })
 
 
-   
+
 }
 

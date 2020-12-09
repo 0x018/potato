@@ -2,6 +2,7 @@
 
 
 // import { loadJson } from "./loadJson.ts";
+import { copy } from "https://deno.land/std/fs/mod.ts";
 import { loadCode } from "./loadCode.js";
 const rx = (await loadCode("dev.serve/rxjs.umd.js").js({})).rxjs;
 
@@ -168,7 +169,7 @@ async function getTextNoError(src) {
 
 function copyIndexFile() {
   let staticFile = config.copy;
-  staticFile.forEach(s => Deno.copyFile(s, outputFile + s));
+  staticFile.forEach(s => (copy(s, outputFile + s,{ overwrite: true })));
 
 }
 

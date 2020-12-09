@@ -10,7 +10,7 @@
         "imports": {
             "@root/": `${ctx.cwd}/`, // serve 的根路径
         },
-        "copy":["index.html", "global.css", "favicon.png"],
+        "copy":["index.html", "assets/", "favicon.png"],
         "app":"app",
         "page":"page",
         "dist":"dist"

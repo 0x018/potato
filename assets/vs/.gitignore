@@ -1,0 +1,7 @@
+# vs code (Search Monaco Editor)依赖太多,忽略
+base/
+basic-languages/
+editor/
+format/
+language/
+loader.js

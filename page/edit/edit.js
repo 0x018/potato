@@ -2,6 +2,7 @@ import gform from "./gform"
 import modal from "./modal"
 import grid from "./grid"
 import gfill from "./gfill"
+import vscode from "./vscode"
 import {
   onMount
 } from "svelte";
@@ -58,7 +59,7 @@ function changeStep(i) {
       let id = url?.id || (Math.random() + "").replace("0.", "").slice(0, 5);
       pushState(i, null, `/#/edit?step=${i}&id=${id}`);
       localStorage.setItem(`style-${id}`, gfStyle);
-      localStorage.removeItem(`scale-${id}`, scale);
+      localStorage.setItem(`scale-${id}`, scale);
       break;
     }
     case 3:
