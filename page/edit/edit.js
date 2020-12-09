@@ -6,9 +6,18 @@ import {
   onMount
 } from "svelte";
 
-let step = 1; // 1,2
-let scale = 0.3;
+export let url;
+let step = null; // null, 1,2
+
 let layoutArr = [
+  {
+    // width: "100%", height: "100%",
+    rows: "100px 100px 100px", columns: "100px 100px 100px 100px",
+    count: 11, desc: "3*4-3-4-4", scale: 1,
+    span: [
+      { index: 1, r: 1, c: 2 }
+    ],
+  },
   {
     width: "100%", height: "100%",
     rows: "80px 1fr", columns: "190px 1fr",
@@ -25,22 +34,41 @@ let layoutArr = [
       { index: 1, r: 1, c: 2 }
     ],
   },
-  {
-    // width: "100%", height: "100%",
-    rows: "100px 100px 100px", columns: "100px 100px 100px 100px",
-    count: 11, desc: "3*4-3-4-4", scale: 1,
-    span: [
-      { index: 1, r: 1, c: 2 }
-    ],
-  },
 ];
 
-
+let scale = layoutArr[0].scale;
 let gridEdit = JSON.parse(JSON.stringify(layoutArr[0]));
 let spanEdit = JSON.parse(JSON.stringify(layoutArr[0]));
-let gridFill = {}; // span edit 后的结果
-
-
+let gfStyle = ""; // span edit 后的结果
+// {()=>changeStep(i)}
+function changeStep(i) {
+  switch (i) {
+    case 1: {
+      step = i;
+      let id = url?.id;
+      if (id) {
+        localStorage.removeItem(`style-${id}`);
+        localStorage.removeItem(`scale-${id}`);
+      }
+      pushState(i, null, `/#/edit?step=${i}`);
+      break;
+    }
+    case 2: {
+      step = i;
+      let id = url?.id || (Math.random() + "").replace("0.", "").slice(0, 5);
+      pushState(i, null, `/#/edit?step=${i}&id=${id}`);
+      localStorage.setItem(`style-${id}`, gfStyle);
+      localStorage.removeItem(`scale-${id}`, scale);
+      break;
+    }
+    case 3:
+      window.open(`/#/preview?id=${url?.id}`);
+      break;
+    default:
+      console.error("changeStep 未定义", i);
+      break;
+  }
+}
 function selectLayout(item) {
   gridEdit = JSON.parse(JSON.stringify(item || {}));
   spanEdit = JSON.parse(JSON.stringify(item || {}));
@@ -68,3 +96,12 @@ function close() {
 }
 
 
+onMount(() => {
+  if (url.id) {
+    step = 2;
+    scale = localStorage.getItem(`scale-${url.id}`);
+    gfStyle = localStorage.getItem(`style-${url.id}`);
+  } else {
+    step = 1;
+  }
+});

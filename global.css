@@ -480,3 +480,10 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"]{
 	 -moz-appearance:textfield;
 }
+
+
+.clear-after::after{
+	content: " ";
+	display: block;
+	clear: both;
+}

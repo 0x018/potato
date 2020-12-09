@@ -1,55 +1,57 @@
-<div class="row">
+<div class="row clear-after">
   {#if step ==1}
   <div class="col line">
     <button class="select" on:click="{open}">常用布局</button>
   </div>
-  <div class="col line grid-edit">
+  <div class="col line grid-edit clear-after">
     <!-- 布局处理 -->
-    <div class="line-500px">
+    <div class="line-500px clear-after">
       <gform next="{gformChange}"
         gtr="{gridEdit.rows}" width="{gridEdit.width}" height="{gridEdit.height}" gtc="{gridEdit.columns}"></gform>
-      <label class="scale">
+      <label class="scale clear-after">
         <span>预览比例:{scale}</span>
         <input type=range bind:value={scale} min=0.2 step=0.1 max=2>
       </label>
-      <div class="clear"></div>
+      <!-- <pre> -->
+      <!-- {gfStyle} -->
+      <!-- {JSON.stringify(gridEdit,null,4)} -->
+      <!-- </pre> -->
     </div>
-    <div class="line-fr">
+    <div class="line-fr clear-after">
       <!-- scale="{gridEdit.scale}" -->
       <div class="span-box" style="{scaleCalc(scale)}">
         <grid gtr="{spanEdit.rows}" width="{spanEdit.width}" height="{spanEdit.height}" gtc="{spanEdit.columns}"
-          count="{spanEdit.count}" span="{spanEdit.span}" mode="{'span-edit'}" scale="{scale}" next="{d=>{ gridFill=d; }}">
+          count="{spanEdit.count}" span="{spanEdit.span}" mode="{'span-edit'}" scale="{scale}" next="{d=>{ gfStyle=d; }}">
         </grid>
       </div>
-      <div class="clear"></div>
     </div>
-    <div class="clear"></div>
   </div>
-  <div class="col line">
+  <div class="col line clear-after">
     <!-- <button class="select" on:click="{open}">常用布局</button> -->
-    <input class="next" type="button" value="下一步" on:click={()=>{step=2}}>
-    <div class="clear"></div>
+    <input class="next" type="button" value="下一步" on:click={()=>changeStep(2)}>
   </div>
   {/if}
   {#if step ==2}
-  <div class="col line">
+  <div class="col line clear-after">
     <!-- 组件选择 -->
     <!-- todo -->
-    {JSON.stringify(gridFill,null,4)}
-    <div class="box">
+    <!-- {JSON.stringify(gfStyle,null,4)} -->
+    <div class="box-fill">
       <div class="span-box" style="{scaleCalc(scale)}">
-        <gfill style="{gridFill.css}"></gfill>
+        <gfill style="{gfStyle}"></gfill>
       </div>
     </div>
-    <div class="clear"></div>
+    <label class="scale clear-after">
+      <span>预览比例:{scale}</span>
+      <input type=range bind:value={scale} min=0.2 step=0.1 max=2>
+    </label>
   </div>
-  <div class="col line">
-    <input class="next" type="button" value="上一步" on:click={()=>{step=1}}>
-    <input class="next" type="button" value="下一步" on:click={()=>{step=3}}>
-    <div class="clear"></div>
+  <div class="col line clear-after">
+    {JSON.stringify(url)}
+    <input class="next" type="button" value="上一步" on:click={()=>changeStep(1)}>
+    <input class="next" type="button" value="下一步" on:click={()=>changeStep(3)}>
   </div>
   {/if}
-  <div class="clear"></div>
 </div>
 
 <modal show="{show}" let:data={md} let:set={sd}>

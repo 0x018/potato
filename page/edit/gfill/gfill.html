@@ -6,13 +6,13 @@
     <!-- <slot item="{item}" change="{()=>{changeGridSpan(i)}}"></slot> -->
 
     <div class="item-edit" style="{scaleCalc}">
-      <!-- {JSON.stringify(cell)} -->
       <p class="index">{item.index}</p>
-     
     </div>
   </div>
   {/each}
 </div>
+<br>
+<!-- count { _calc_count } -->
 <div class="hidden">
   <div class="container grid-{classSuff}" style="{gridGtr}">
     {#each Array(rowNum*colNum).fill(0) as item, i}

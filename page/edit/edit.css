@@ -111,3 +111,9 @@ div.span-edit{
   padding:8px;
   overflow: auto;
 }
+.box-fill{
+  width:calc(100% - 500px);
+  height:400px;
+  overflow: auto;
+  background-color: #e0e0e0;
+}

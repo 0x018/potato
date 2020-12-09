@@ -7,7 +7,6 @@ export let style;
 
 // export let count = null;
 let _calc_count = null;
-export let span = []; // 跨行 跨列
 export let scale = 3.3;
 let rowNum = 0;
 let colNum = 0;
@@ -17,8 +16,9 @@ function setGrid(count) {
 
   let arr = Array(count || 0).fill(0);
   grid = arr.map((v, i) => {
-    let spanItem = span.find(s => s.index == (i + 1)) || {};
-    return grid[i] || {
+    // let spanItem = span.find(s => s.index == (i + 1)) || {};
+    // grid[i] || 
+    return {
       index: i + 1,
     }
   })
@@ -74,14 +74,17 @@ function cssCodeToStyle(cssCode) {
     rowNum = calcLen(style.gridTemplateRows + "");//
     colNum = calcLen(style.gridTemplateColumns + "");//
     let repeatStr = " repeat(10, 0px);";
-    gridGtr ="grid-template-rows:"+ Array(rowNum).fill("10px").join(" ") + repeatStr;
+    gridGtr = "grid-template-rows:" + Array(rowNum).fill("10px").join(" ") + repeatStr;
     setTimeout(() => {
       let hidden = Array.from(document.querySelectorAll(".hidden>.grid-" + classSuff + ">.item"));
-      hidden.forEach((item, i) => {
+      hidden.every((item, i) => {
         item.innerText = "" + window.getComputedStyle(item).height;
         if (window.getComputedStyle(item).height == "0px") {
           _calc_count = i;
+          // break;
+          return false;
         }
+        return true;
       });
     })
 

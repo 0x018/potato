@@ -23,33 +23,7 @@
   font-size: 18px;
   /* margin-right: 1em; */
   margin-left: 0.5em;
-}
-.item-edit.span-edit>label{
-  /* width:50%; */
-  /* max-width: 100px; */
-  min-width: 50px;
-  display: inline-block;
-  text-align: right;
-}
-.item-edit>*{
-  float:left;
-}
-input.span-edit{
-  width:12px;
-  display:inline-block;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-radius: 0;
-  text-align: right;
-  margin-top: -1px;
-}
-input.span-edit:focus{
-  border-color: #fff;
-  box-shadow:none;
-  color:#fff;
-  font-weight: 600;
-  
+  font-size: 40px;
 }
 .hidden{
   position: relative;

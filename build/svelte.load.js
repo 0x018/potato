@@ -16,6 +16,7 @@ function load(url) {
      .then(d => {
         let ccc;
         eval(
+           `let pushState = window.pushState;`+
            `(function (srt) {\n` +
            `  'use strict';\n` +
            `  /* context, don't remove */\n` +

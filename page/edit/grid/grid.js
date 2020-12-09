@@ -19,10 +19,11 @@ let grid = [];
 $: _watchCount = setGrid() || count + gtr + gtc;
 function setGrid() {
 
-  let arr = Array(_calc_count || count || 0).fill(0);
+  let arr = Array(count || 0).fill(0);
   grid = arr.map((v, i) => {
     let spanItem = span.find(s => s.index == (i + 1)) || {};
-    return grid[i] || {
+    // grid[i] || 
+    return {
       index: i + 1,
       t: null,// top 
       l: null,// left
@@ -36,7 +37,7 @@ function setGrid() {
 
 
 
-$: __watchStyle = resetStyle() || (width + height + gtr + gtc);// + span.length);
+$: __watchStyle = resetStyle() || (width + height + gtr + gtc + span.length);
 let classSuff = (Math.random() + "").replace("0.", "").slice(0, 5);
 let styleTag = null;
 
@@ -83,16 +84,22 @@ function cssCodeInit() {
     ".item-1 {\n" +
     "    /*background:red;*/\n" +
     "}\n";
-  let spanCss = span.map(v =>
-    `\n.item-${v.index}{\n` +
-    `    grid-area: span ${v.r} / span ${v.c};\n}`
-  ).join("");
-  if (next) next({ css: cssCode + spanCss, count: _calc_count || count });
+  // let spanCss = 
+  // outputCss = 
+  if (next) next(cssCode + getSpanCss());
   // dispatch('cssput', { css: cssCode + spanCss, count: _calc_count || count });
   // if (mode == "list-item") {
   //   cssCode += spanCss;
   // }
   return cssCode;
+}
+// let outputCss = "";
+function getSpanCss() {
+  let span = grid.map(v => ({ index: v.index, r: v.r, c: v.c })).filter(v => (v.r !== 1 || v.c !== 1));
+  return span.map(v =>
+    `\n.item-${v.index}{\n` +
+    `    grid-area: span ${v.r} / span ${v.c};\n}`
+  ).join("");
 }
 function cssCodeToStyle(cssCode) {
   // debugger
@@ -126,9 +133,10 @@ function cssCodeToStyle(cssCode) {
 $: scaleCalc = `transform:scale3d(${1 / scale}, ${1 / scale}, ${1 / scale});width:${scale * 100}%;height:${scale * 100}%;`;
 
 function spanChange() {
-  setTimeout(() =>
-    outPutCount(rowNum, colNum, grid), 200
-  );
+  setTimeout(() => {
+    outPutCount(rowNum, colNum, grid);
+    cssCodeInit();
+  }, 200);
 }
 
 function outPutCount(gr, gc, span) {

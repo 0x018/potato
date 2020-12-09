@@ -4,7 +4,7 @@
 {#await load(page)}
 	<p>...load...</p>
 {:then value}
-	<svelte:component this={value} {...search}/>
+	<svelte:component this={value} url={search}/>
 {:catch error}
 	<p>load failed: {error.message}</p>
 {/await}

@@ -59,12 +59,22 @@ async function compilePage(src, name, flag) {
     let source = await getSvelte(item.src); // getSvelte 
     // item.name = item.name || item.;
     // console.log("compile ",name, source)
-    const result = svelte.compile(source, {
-      format: "esm",
-      generate: "dom",
-      dev: false,
-      name: item.name,
-    });
+    let result = null;
+    try {
+      result = svelte.compile(source, {
+        format: "esm",
+        generate: "dom",
+        dev: false,
+        name: item.name,
+      });
+    } catch (error) {
+      console.error("%cerror %csvelte.compile error at %c" + item.src,
+        "color:#f55;font-weight: bold;",
+        "",
+        "color:#08f;font-weight: bold;");
+      console.log("     ", error.toString().split("\n")[0]);
+      return;
+    };
     item.code = `// ${item.src} \n` + result.js.code;
     // if(item.name=="edit"||)
     // console.log("page ",item.name,item.code)
