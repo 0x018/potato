@@ -24,8 +24,8 @@ export function send(req, key, task) {
   let ct = {
     "null": null,
     "html": "text/html",
-    "js": "	application/javascript",
-    "css": "	text/css",
+    "js": "application/javascript",
+    "css": "text/css",
     "jpeg": "image/jpeg",
     "png": "image/png",
     "svg": "text/xml",

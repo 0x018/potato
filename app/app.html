@@ -1,10 +1,10 @@
 <header>
-
+	header.header.header.header.header.header
 </header>
 {#await load(page)}
 	<p>...load...</p>
 {:then value}
-	<svelte:component this={value} url={search}/>
+	<svelte:component this={value} url={search}></svelte:component>
 {:catch error}
 	<p>load failed: {error.message}</p>
 {/await}

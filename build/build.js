@@ -89,8 +89,10 @@ async function compilePage(src, name, flag) {
     code = code.concat(deps);
     // console.log("compilePage", i, code.length);
   }
-
-  let text = code.map(v => `let ${v.name} = (function () {\n  ${removeImportExport(v.code).replace(/\n/g, "\n  ")};\n  return ${v.name};\n})();`).reverse().join("\n\n")
+  code = code.reverse();
+  let key = Array.from(new Set(code.map(v => v.name)));
+  code = key.map(k => code.find(c => c.name == k));
+  let text = code.map(v => `let ${v.name} = (function () {\n  ${removeImportExport(v.code).replace(/\n/g, "\n  ")};\n  return ${v.name};\n})();`).join("\n\n")
   // console.log("compilePage writeTextFile", buildFile + "page/" + fileName + ".js")
   if (!flag) {
     let page = config.page + "/";
@@ -169,7 +171,7 @@ async function getTextNoError(src) {
 
 function copyIndexFile() {
   let staticFile = config.copy;
-  staticFile.forEach(s => (copy(s, outputFile + s,{ overwrite: true })));
+  staticFile.forEach(s => (copy(s, outputFile + s, { overwrite: true })));
 
 }
 
@@ -182,12 +184,13 @@ async function createAppFile() {
   let exportCode, indexjs = "\n" + (await Deno.readTextFile(buildPath + sveltejs)).trimEnd();
   [indexjs, exportCode] = indexjs.split("\nexport");
 
-  exportCode = exportCode.replace(" };", ", load }");
+  exportCode = exportCode.replace(" };", ", load, QI }");
   // exportCode 
-  indexjs += `let srt =` + exportCode + ";\n\n";
+
   indexjs += "// svelte.load.js \n" +
     (await Deno.readTextFile(buildPath + svelteLoad))
       .replace(/\/\* context\,.+\*\//, "let" + exportCode + " = srt;const { document: document_1 } = globals;\n") + "\n";
+  indexjs += `let srt =` + exportCode + ";\n\n";
   // indexjs += "";
   let appCode = await compilePage(appFile, 'app', true)
   // removeImportExport(  );

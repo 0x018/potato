@@ -112,7 +112,7 @@ div.span-edit{
   overflow: auto;
 }
 .box-fill{
-  width:calc(100% - 500px);
+  width:calc(100% - 550px);
   height:700px;
   overflow: auto;
   background-color: #e0e0e0;
@@ -124,7 +124,7 @@ div.span-edit{
 }
 
 .box-vscode{
-  width:500px;
+  width:550px;
   height:700px;
   float:left;
   margin:0;

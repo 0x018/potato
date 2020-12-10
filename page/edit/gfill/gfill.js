@@ -1,4 +1,5 @@
 import { onMount } from 'svelte';
+import modal from "../modal"
 // import { createEventDispatcher } from 'svelte';
 // const dispatch = (...s)=>console.log(...s)
 // createEventDispatcher();
@@ -11,7 +12,11 @@ let _calc_count = null;
 let rowNum = 0;
 let colNum = 0;
 let grid = [];
-
+let data = Array(100).fill(0).map(() => ({}));
+function setData(i, d) {
+  // data[i] = data[i] || {};
+  data[i] = d;
+}
 function setGrid(count) {
   console.log("setGrid", count)
   let arr = Array(count || 0).fill(0);
@@ -19,7 +24,8 @@ function setGrid(count) {
     return {
       index: i + 1,
     }
-  })
+  });
+
   grid = grid;
 }
 
@@ -64,7 +70,7 @@ function cssCodeToStyle(cssCode) {
     let calcLen = (str) => {
       let m1 = str.match(/(\d+)/g) || [];
       let m2 = str.match(/(calc)/g) || [];
-      console.log("calc len", str, m1.length , m2.length);
+      console.log("calc len", str, m1.length, m2.length);
       return m1.length - m2.length;
     }
 
@@ -94,3 +100,18 @@ function cssCodeToStyle(cssCode) {
 }
 // 内部放大
 $: scaleCalc = `transform:scale3d(${1 / scale}, ${1 / scale}, ${1 / scale});width:${scale * 100}%;height:${scale * 100}%;`;
+
+
+
+// modal 选择组件
+let show = new rxjs.Subject();
+let dIndex = null;
+function open(i) {
+  console.log("open", i)
+  dIndex = i;
+  show.next(true);
+}
+function close() {
+  dIndex = null;
+  show.next(false);
+}

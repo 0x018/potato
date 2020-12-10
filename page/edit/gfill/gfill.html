@@ -3,10 +3,11 @@
   {#each grid as item, i}
   <div class="item item-{item.index} item-bg">
     <!-- <p class="index">{item.index}</p> -->
-    <!-- <slot item="{item}" change="{()=>{changeGridSpan(i)}}"></slot> -->
-
+    <slot item="{item}" len="{grid.length}"></slot>
     <div class="item-edit" style="{scaleCalc}">
       <p class="index">{item.index}</p>
+      <div class="add-box" on:click={()=>open(item.index)}>+</div>
+      <div class="del-box" on:click={()=>close(item.index)}>X</div>
     </div>
   </div>
   {/each}
@@ -20,3 +21,13 @@
     {/each}
   </div>
 </div>
+
+<modal show="{show}" let:data={md} let:set={sd}>
+  {#await load("page/search.js")}
+  <p>...load...</p>
+  {:then value}
+  <svelte:component this={value} next={(d)=>{setData(dIndex,d);}}></svelte:component>
+  {:catch error}
+  <p>load failed: {error.message}</p>
+  {/await}
+</modal>

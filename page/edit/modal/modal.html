@@ -1,8 +1,10 @@
-<div class="modal" class:show="{isShow}">
-  <div class="modal-mask" on:click="{changeModal}"></div>
-  <div class="modal-content">
-    <slot data="{data}" set="{sd}">
-      <em>---空弹窗---</em>
-    </slot>
+<QI query="body">
+  <div class="modal" class:show="{isShow}">
+    <div class="modal-mask" on:click="{changeModal}"></div>
+    <div class="modal-content">
+      <slot data="{data}" set="{sd}">
+        <em>---空弹窗---</em>
+      </slot>
+    </div>
   </div>
-</div>
+</QI>

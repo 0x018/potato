@@ -87,7 +87,7 @@ function scaleCalc(s) {
   return `transform:scale3d(${s}, ${s}, ${s});`
 }
 
-// modal
+// modal 选择布局
 let show = new rxjs.Subject();
 function open() {
   show.next(true);
@@ -106,3 +106,4 @@ onMount(() => {
     step = 1;
   }
 });
+
