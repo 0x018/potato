@@ -17,6 +17,7 @@ function getUrl() {
 		"home": "page/home.js",
 		"edit": "page/edit.js",
 		"preview": "page/preview.js",
+		"search": "page/search.js",
 		"304": "304.js"
 	}[u];
 }

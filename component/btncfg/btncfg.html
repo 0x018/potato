@@ -1,0 +1,35 @@
+
+{#await load('/component/btn.css',{type:'css'})}
+...
+{:then value}
+
+{@html `<style>${value}</style>`}
+
+{:catch error}
+<p>load css error: {error.message}</p>
+{/await}
+
+<div class="box">
+  <div class="demo preview">
+    <a class="button" href="javascript:;">Default Button</a>
+    <button class="button button-outline">Outlined Button</button>
+    <input class="button button-clear" type="button" value="Clear Button">
+  </div>
+  <div class="config" class:show={active}>
+    <div class="preview">
+      <p>code:</p>
+      <pre>{exampleCode}</pre>
+      <p>example:</p>
+      {@html exampleCode}
+    </div>
+    <form action="javascript:;" on:submit={submit} class="config-form">
+      <span class="title">单选</span>
+      <label class="options">
+        <input type="radio" name="aaa" value="aaa">
+        <span>options</span>
+      </label>
+
+      <input type="submit" value="确定">
+    </form>
+  </div>
+</div>

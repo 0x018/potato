@@ -1,0 +1,11 @@
+.config {
+  max-height: 0;
+  overflow-y: hidden;
+}
+
+.config.show {
+  max-height: unset;
+}
+.box{
+  /* border:1px solid red; */
+}

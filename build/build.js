@@ -52,14 +52,9 @@ function removeImportExport(str) {
 async function compilePage(src, name, flag) {
   flag = flag || false;
   // let i = 0;
-  let code = [{ src: src, name: name, code: null }];
+  let code = [{ src: src, name: name, code: null, type: null }];
   let fileName = src.split('/').pop().split('.').shift()
-  for (let i = 0; i < code.length; i++) {
-    let item = code[i];
-    // console.log("read file ", item.src)
-    let source = await getSvelte(item.src); // getSvelte 
-    // item.name = item.name || item.;
-    // console.log("compile ",name, source)
+  let compileSvelte = (source, item) => {
     let result = null;
     try {
       result = svelte.compile(source, {
@@ -74,33 +69,66 @@ async function compilePage(src, name, flag) {
         "",
         "color:#08f;font-weight: bold;");
       console.log("     ", error.toString().split("\n")[0]);
-      return;
+      return null;
     };
-    item.code = `// ${item.src} \n` + result.js.code;
-    // if(item.name=="edit"||)
-    // console.log("page ",item.name,item.code)
-    let deps = getImport(item.code).flatMap(v => (code.find(c => (c.src === v)) ? [] : ({
-      src: item.src + "/" + v,////.replace(".", ""), //+"/",  // todo
-      code: null,
-      name: v.split('/').pop().split('.').shift().replace(/^./, str => str.toUpperCase())
+    return result;
+  };
+  let onlyCss = (src) => (/.+\.css$/.test(src));
+  for (let i = 0; i < code.length; i++) {
+    let item = code[i];
+    // console.log("read file ", item.src)
+    let source = await getSvelte(item.src); // getSvelte 
+    // item.name = item.name || item.;
+    // console.log("compile ",name, source)
+    if (onlyCss(item.src)) {
+      item.code = `/* ${item.src} */\n` + source;
+      item.type = 'css';
+    } else {
+      let result = compileSvelte(source, item);
+      if (result) {
+        item.code = `/* ${item.src} */\n` + result.js.code;
+        // if(item.name=="edit"||)
+        // console.log("page ",item.name,item.code)
+        let deps = getImport(item.code).flatMap(v => (code.find(c => (c.src === v)) ? [] : ({
+          src: item.src + "/" + v,////.replace(".", ""), //+"/",  // todo
+          code: null,
+          name: v.split('/').pop().split('.').shift().replace(/^./, str => str.toUpperCase())
 
-    })));
-    // console.log("deps",deps)
-    code = code.concat(deps);
-    // console.log("compilePage", i, code.length);
+        })));
+        // console.log("deps",deps)
+        code = code.concat(deps);
+        // console.log("compilePage", i, code.length);
+      } else return null;
+    }
+
   }
   code = code.reverse();
   let key = Array.from(new Set(code.map(v => v.name)));
   code = key.map(k => code.find(c => c.name == k));
-  let text = code.map(v => `let ${v.name} = (function () {\n  ${removeImportExport(v.code).replace(/\n/g, "\n  ")};\n  return ${v.name};\n})();`).join("\n\n")
+
+  let js = code.filter(v => v.type !== 'css').map(v => {
+    return (
+      `let ${v.name} = (function () {\n` +
+      `  ${removeImportExport(v.code).replace(/\n/g, "\n  ")};\n` +
+      `  return ${v.name};\n` +
+      `})();\n\n`
+    );
+    // return { type: '.js', text: text };
+  }).join("");
+  let css = code.filter(v => v.type === 'css').map(v => v.code).join("");
   // console.log("compilePage writeTextFile", buildFile + "page/" + fileName + ".js")
-  if (!flag) {
-    let page = config.page + "/";
-    Deno.writeTextFile(outputFile + page + fileName + ".js", text);
+  if (flag !== true) {
+    let page = flag + "/";
+    if (js) {
+      Deno.writeTextFile(outputFile + page + fileName + ".js", js);
+    }
+    if (css) {
+      Deno.writeTextFile(outputFile + page + fileName + ".css", css);
+    }
   } else {
-    console.log("compilePage text", text.length)
+    console.log("compilePage text", js.length)
   }
-  return new Promise(res => res(text));
+  return new Promise(res => res(js));
 }
 
 
@@ -122,23 +150,28 @@ function getImport(str) {
 }
 
 async function getSvelte(src) {
-  console.log("getSvelte", src)
+  // console.log("getSvelte", src)
   let f;
   try {
-
     f = (await Deno.stat(src));
   } catch (e) {
 
   }
   if (f && f.isFile) {
+
     if (/\.svelte$/.test(src))
       return await Deno.readTextFile(src);
-    else return "";
+    if (/\.css$/.test(src))
+      return await Deno.readTextFile(src);
+    else {
+      console.error("build.js getSvelte Untreated", src)
+      return "/* build.js getSvelte Untreated */";
+    }
   } else {
     let name = src.split("/");
     // name.pop();
     name = name.pop();
-    console.log("getSvelte name", name, src + "/" + name + ".html");
+    // console.log("getSvelte name", name, src + "/" + name + ".html");
     let html = (await getTextNoError(src + "/" + name + ".html")) || "";
     let js = (await getTextNoError(src + "/" + name + ".js")) || "";
     let css = (await getTextNoError(src + "/" + name + ".css")) || "";
@@ -155,6 +188,10 @@ async function getSvelte(src) {
       html = html.replaceAll(`</${n}>`, `</${n2}>`);
     }
     // console.log("cName",cName);
+    if (!html && !js && !css) {
+      html = "--该组件不存在--<br>" + name + " : " + src;
+      console.error("组件没找到!", name, src)
+    }
     return `<script>${js || ""}</script><style>${css || ""}</style>${html || ""}`
   }
 }
@@ -170,12 +207,14 @@ async function getTextNoError(src) {
 
 
 function copyIndexFile() {
+  console.log("buildjs run copyIndexFile");
   let staticFile = config.copy;
   staticFile.forEach(s => (copy(s, outputFile + s, { overwrite: true })));
 
 }
 
 async function createAppFile() {
+  console.log("buildjs run createAppFile");
   // index js 编译
   let appFile = config.app;
   let sveltejs = "svelte.internal.mjs"; //svelte/internal/index.mjs
@@ -210,20 +249,25 @@ async function createAppFile() {
 }
 
 async function createPageFile() {
+  console.log("buildjs run createPageFile");
   // page js 编译
-  let page = config.page + "/";
+  (config.page || []).forEach(async v => {
+    let page = v + "/";
+    console.log("createPageFile", v, outputFile + page)
+    await Deno.mkdir(outputFile + page, { recursive: true });
+    console.log("createPageFile readFile", page)
+    for await (const dir of Deno.readDir(page)) {
+      console.log("await readDir", page, dir.name);
+      // if (dir.isFile) 
+      compilePage(page + dir.name, v, page);
 
-  await Deno.mkdir(outputFile + page, { recursive: true });
+    }
+  });
 
-  for await (const dir of Deno.readDir(page)) {
-    // console.log(dir.name);
-    // if (dir.isFile) 
-    compilePage(page + dir.name, "page");
-
-  }
 }
 
 async function emptyDir() {
+  console.log("buildjs run emptyDir");
   // 清空 
   // console.log("清空",outputFile)
   await Deno.mkdir(outputFile, { recursive: true });
@@ -235,7 +279,7 @@ async function emptyDir() {
 }
 let fileWatch = new rx.Subject();
 async function watchFile() {
-  const watcher = Deno.watchFs([...(config.copy), config.page + "/", config.app]);
+  const watcher = Deno.watchFs([...(config.copy), ...config.page.map(v => v + "/"), config.app]);
   for await (const event of watcher) {
     console.log(Date.now() + ">>>> event", event);
     // { kind: "create", paths: [ "/foo.txt" ] }
@@ -255,12 +299,13 @@ fileWatch.pipe(
   // rx.operators.debounceTime(800),
   // rx.operators.switchMap(() => fileWatch.pipe(rx.operators.scan((acc, curr) => acc.add(curr), new Set())))
 ).subscribe(val => {
-  console.log("do ", val)
-  if (val == config.app) {
-    createAppFile();
-  } else if (val.indexOf("/" + config.page + "/") > -1) {
-    createPageFile();
-  } else copyIndexFile();
+  console.log("do ", val);
+  copyIndexFile();
+  // if (val == config.app) {
+  createAppFile();
+  // } else // if (val.indexOf("/" + config.page + "/") > -1) {
+  createPageFile();
+  // } // else 
   setTimeout(() => {
     fetch(`http://localhost:${config.port}/refresh/`, { method: "POST" }).then(v => {
       // console.log("refresh",v)
