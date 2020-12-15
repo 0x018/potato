@@ -12,6 +12,6 @@
         },
         "copy":["index.html", "assets/", "favicon.png"],
         "app":"app",
-        "page":"page",
+        "page":["page","component"],
         "dist":"dist"
 })

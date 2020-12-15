@@ -1,5 +1,5 @@
 // svelte.load.js 
-function load(url) {
+function load(url, opt) {
 
    return fetch(url, {
       headers: {
@@ -14,33 +14,52 @@ function load(url) {
          throw new Error('http status ' + d.status);
       })
       .then(d => {
-         let ccc;
-         eval(
-            `let pushState = window.pushState;` +
-            `(function (srt) {\n` +
-            `  'use strict';\n` +
-            `  /* context, don't remove */\n` +
-            `  ;${d};\n` +
-            // `  var page = page||null;\n`+ // 防报错
-            `  ccc=(page);\n` +
-            `}(srt));\n`
-         );
-         ccc = ccc || null;
-         if (!ccc) {
-            console.error('load js null', url, d);
-            throw new Error('page code error');
-         };
-         return ccc;
+         opt = opt || { name: 'page' };
+         if (typeof opt == 'string') {
+            opt = {
+               type: "",
+               name: opt
+            };
+         }
+         console.log("opt", url, opt);
+         // let result = null;
+         switch (opt.type || "") {
+            case "css":
+               return d;
+               break;
+            case "":
+               let name = opt.name;
+               console.log("opt name", url, name);
+               let ccc;
+               eval(
+                  `let pushState = window.pushState;` +
+                  `(function (srt) {\n` +
+                  `  'use strict';\n` +
+                  `  /* context, don't remove */\n` +
+                  `  ;${d};\n` +
+                  // `  var page = page||null;\n`+ // 防报错
+                  `  ccc=(${name || 'page'});\n` +
+                  `}(srt));\n`
+               );
+               ccc = ccc || null;
+               if (!ccc) {
+                  console.error('load js null', url, d);
+                  throw new Error('page code error');
+               };
+               return ccc;
+               break;
+         }
+
       })
 
 }
 
 /**
  * <script>
-	   export let query; // ctx[0]
+      export let query; // ctx[0]
    </script>
    <svelte:head> // document.head => document.querySelector( /*query** / ctx[0])
-	   <slot></slot>
+      <slot></slot>
    </svelte:head>
  */
 let QI = (function () {
