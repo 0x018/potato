@@ -1,0 +1,8 @@
+:global(html, body) {
+  height: 100%;
+}
+
+:global(header) {
+  position: absolute;
+  z-index: 9;
+}

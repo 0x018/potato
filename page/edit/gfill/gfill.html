@@ -1,14 +1,38 @@
 <div class="preview container grid-{classSuff}">
   {@html `<style>${styleTag}</style>`}
   {#each grid as item, i}
-  <div class="item item-{item.index} item-bg">
-    <!-- <p class="index">{item.index}</p> -->
+  <div class="item item-{item.index}" class:item-bg={data[item.index]==null} class:item-bg-translucent={data[item.index]!=null}>
+
     <slot item="{item}" len="{grid.length}"></slot>
     <div class="item-edit" style="{scaleCalc}">
       <p class="index">{item.index}</p>
-      <div class="add-box" on:click={()=>open(item.index)}>+</div>
-      <div class="del-box" on:click={()=>close(item.index)}>X</div>
+      {#if data[item.index]==null}
+      <div class="add-box" on:click={()=>open(item.index)}>
+        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="m256 512c-141.164062 0-256-114.835938-256-256s114.835938-256 256-256 256 114.835938 256 256-114.835938 256-256 256zm0-480c-123.519531 0-224 100.480469-224 224s100.480469 224 224 224 224-100.480469 224-224-100.480469-224-224-224zm0 0" />
+          <path fill="currentColor" d="m368 272h-224c-8.832031 0-16-7.167969-16-16s7.167969-16 16-16h224c8.832031 0 16 7.167969 16 16s-7.167969 16-16 16zm0 0" />
+          <path fill="currentColor" d="m256 384c-8.832031 0-16-7.167969-16-16v-224c0-8.832031 7.167969-16 16-16s16 7.167969 16 16v224c0 8.832031-7.167969 16-16 16zm0 0" />
+        </svg>
+      </div>
+      {:else}
+      <div class="del-box" on:click={()=>close(item.index)}>
+        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="m256 512c-141.164062 0-256-114.835938-256-256s114.835938-256 256-256 256 114.835938 256 256-114.835938 256-256 256zm0-480c-123.519531 0-224 100.480469-224 224s100.480469 224 224 224 224-100.480469 224-224-100.480469-224-224-224zm0 0" />
+          <path fill="currentColor" d="m368 272h-224c-8.832031 0-16-7.167969-16-16s7.167969-16 16-16h224c8.832031 0 16 7.167969 16 16s-7.167969 16-16 16zm0 0" />
+          <path fill="currentColor" d="m256 384c-8.832031 0-16-7.167969-16-16v-224c0-8.832031 7.167969-16 16-16s16 7.167969 16 16v224c0 8.832031-7.167969 16-16 16zm0 0" />
+        </svg>
+      </div>
+      {#if data[item.index]?.html}
+      <!-- html css -->
+      <!-- html link style -->
+      <htag {...data[item.index]}></htag>
+      {:else}
+      <!-- component data -->
+      <svelte:component this={data[item.index].cpt} {...data[item.index].data}></svelte:component>
+      {/if}
+      {/if}
     </div>
+
   </div>
   {/each}
 </div>

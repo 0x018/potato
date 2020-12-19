@@ -1,21 +1,25 @@
 import { onMount } from 'svelte';
 import modal from "../modal"
+import htag from "../htag.svelte"
 // import { createEventDispatcher } from 'svelte';
 // const dispatch = (...s)=>console.log(...s)
 // createEventDispatcher();
 export let next;
 export let style;
-export let scale = 3.3;
+export let scale;
+let messageTimes = 0;
 
 // export let count = null;
 let _calc_count = null;
 let rowNum = 0;
 let colNum = 0;
 let grid = [];
-let data = Array(100).fill(0).map(() => ({}));
+let data = Array(100).fill(null);//.map(() => ());
 function setData(i, d) {
   // data[i] = data[i] || {};
   data[i] = d;
+  // 关闭弹窗
+  close();
 }
 function setGrid(count) {
   console.log("setGrid", count)
@@ -27,6 +31,10 @@ function setGrid(count) {
   });
 
   grid = grid;
+  if (messageTimes < 3) {
+    messageTimes++;
+    message();
+  }
 }
 
 
@@ -52,7 +60,7 @@ function resetStyle() {
 let gridGtr = "";
 function cssCodeToStyle(cssCode) {
   // debugger
-  cssCode = cssCode.replace(/\/\*.*?\*\//g, "");
+  cssCode = (cssCode || "").replace(/\/\*.*?\*\//g, "");
 
   let root = "\n.grid-" + classSuff;
   let csstag = cssCode.replace(/[^}]+{/g, function (str) {
@@ -105,13 +113,26 @@ $: scaleCalc = `transform:scale3d(${1 / scale}, ${1 / scale}, ${1 / scale});widt
 
 // modal 选择组件
 let show = new rxjs.Subject();
-let dIndex = null;
+let dIndex = null; // modal 要使用的数据
 function open(i) {
   console.log("open", i)
   dIndex = i;
   show.next(true);
 }
-function close() {
+function close(i) {
   dIndex = null;
+  if (i || i === 0) {
+    data[i] = null;
+  }
   show.next(false);
+  message();
+}
+
+function message() {
+  if (next) {
+    let d = data.slice(1, (grid.length || 0) + 1);
+    d = d.flatMap((v, i) => v ? { ...v, index: i + 1 } : []);
+    next({ grid: d, count: grid.length || 0 });
+    console.log("send gfill result", d);
+  }
 }

@@ -3,9 +3,7 @@ import modal from "./modal"
 import grid from "./grid"
 import gfill from "./gfill"
 import vscode from "./vscode"
-import {
-  onMount
-} from "svelte";
+import { onMount } from "svelte";
 
 export let url;
 let step = null; // null, 1,2
@@ -41,6 +39,7 @@ let scale = layoutArr[0].scale;
 let gridEdit = JSON.parse(JSON.stringify(layoutArr[0]));
 let spanEdit = JSON.parse(JSON.stringify(layoutArr[0]));
 let gfStyle = ""; // span edit 后的结果
+let gfillResult = {}; // 组件选择结果 grid[] count
 // {()=>changeStep(i)}
 function changeStep(i) {
   switch (i) {
@@ -58,13 +57,19 @@ function changeStep(i) {
       step = i;
       let id = url?.id || (Math.random() + "").replace("0.", "").slice(0, 5);
       pushState(i, null, `/#/edit?step=${i}&id=${id}`);
+      console.log("edit gfStyle", gfStyle)
       localStorage.setItem(`style-${id}`, gfStyle);
       localStorage.setItem(`scale-${id}`, scale);
       break;
     }
-    case 3:
+    case 3: {
+      let id = url.id;
+      localStorage.setItem(`style-${id}`, gfStyle);
+      localStorage.setItem(`grid-${id}`, JSON.stringify(gfillResult.grid));
+      localStorage.setItem(`grid-count-${id}`, (gfillResult.count));
       window.open(`/#/preview?id=${url?.id}`);
       break;
+    }
     default:
       console.error("changeStep 未定义", i);
       break;
@@ -101,7 +106,8 @@ onMount(() => {
   if (url.id) {
     step = 2;
     scale = localStorage.getItem(`scale-${url.id}`);
-    gfStyle = localStorage.getItem(`style-${url.id}`);
+    gfStyle = localStorage.getItem(`style-${url.id}`) || "";
+    if (gfStyle == "") changeStep(1);
   } else {
     step = 1;
   }

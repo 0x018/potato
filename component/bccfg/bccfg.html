@@ -1,26 +1,24 @@
-<div class="demo-box demo-{classSuff}">
+<div class="demo-box">
   <div class="demo preview">
-    {#await load(link,{type:'css'})}
+    {#await load(link,"component")}
     <p>...load...</p>
     {:then value}
-    {@html `<style>${cssUse(value)}</style>`}
+    {initCpt(value)}
+    <svelte:component this={value} {...data}></svelte:component>
     {:catch error}
     <p>load css error: {error.message}</p>
     {/await}
-    <button class="button">button</button>
-    <button class="button draw">draw</button>
-    <button class="button fill">fill</button>
-    <button class="button dashed">dashed</button>
-    <button class="button link">link</button>
+
   </div>
   <div class="config" class:show={active}>
     <div class="preview">
       <p>code:</p>
       <pre>{exampleCode}</pre>
       <p>example:</p>
-      {@html exampleCode}
+      <svelte:component this={cpt} {...data}></svelte:component>
     </div>
     <form action="javascript:;" on:submit={submit} on:change={formChange} class="config-form">
+      <!--
       <div class="form-item">
         <span class="title">tag</span>
         <label class="options">
@@ -46,10 +44,6 @@
           <input type="checkbox" name="class" value="fill">
           <span>fill</span>
         </label>
-        <!-- <label class="options">
-          <input type="checkbox" name="class" value="pulsing">
-          <span>pulsing(必须双标记)</span>
-        </label> -->
         <label class="options">
           <input type="checkbox" name="class" value="draw">
           <span>draw(必须双标记)</span>
@@ -63,10 +57,10 @@
           <span>link</span>
         </label>
       </div>
-      <!-- <div class="form-item">
+      <div class="form-item">
         <span class="title">color</span>
         <label class="options">
-          <input type="radio" name="color" value="">
+          <input type="radio" name="color" value="--">
           <span>--</span>
         </label>
         <label class="options">
@@ -81,24 +75,15 @@
           <input type="radio" name="color" value="initial">
           <input type="color" name="color">
         </label>
-      </div> -->
-
-      <!-- <div class="form-item">
-        <span class="title">color</span>
-        <label class="options">
-          <input type="radio" name="color" value="--">
-          <span>--</span>
-        </label>
-      </div> -->
-
+      </div>
       <div class="form-item">
         <label class="options">
           <span class="title">text</span>
           <input type="text" name="text" value="button">
         </label>
       </div>
-
-      <input type="submit" value="确定" on:click="">
+<!--  -->
+      <input type="submit" value="确定">
     </form>
   </div>
 </div>

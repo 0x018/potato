@@ -1,14 +1,22 @@
-
-{@html girdStyle}
-{url.id}
-<div class="preview container grid-{id}" class:empty="{grid?.length==0}">
+<!-- {@html girdStyle} -->
+<!-- {url.id} -->
+<!-- <QI query="body>header">预览</QI> -->
+<htag style={style}></htag>
+<div class="preview container grid-{url.id}" class:empty="{grid?.length==0}">
   {#each grid as item, i}
   <div class="item item-{item.index}">
     {#if item?.component}
-    <svelte:component this={item?.component} {...item?.data}></svelte:component>
+    {#await load(item?.component,"component")}
+    <p>...load...</p>
+    {:then value}
+    <!-- <svelte:component this={value} next={(d)=>{setData(dIndex,d);}}></svelte:component> -->
+    <svelte:component this={value} {...item?.data}></svelte:component>
+    {:catch error}
+    <p>load failed: {error.message}</p>
+    {/await}
     {/if}
-    {#if item?.code}
-    <svelte:component this={Htag} code="{item?.code}" {...item?.data}></svelte:component>
+    {#if item?.html}
+    <htag {...item}></htag>
     {/if}
   </div>
   {/each}

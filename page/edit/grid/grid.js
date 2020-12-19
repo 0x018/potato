@@ -103,7 +103,7 @@ function getSpanCss() {
 }
 function cssCodeToStyle(cssCode) {
   // debugger
-  cssCode = cssCode.replace(/\/\*.*?\*\//g, "");
+  cssCode = (cssCode || "").replace(/\/\*.*?\*\//g, "");
 
   let root = "\n.grid-" + classSuff;
   let csstag = cssCode.replace(/[^}]+{/g, function (str) {

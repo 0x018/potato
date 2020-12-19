@@ -41,7 +41,10 @@ function editInit(cssCode) {
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function (e) {
       let txt = editor.getValue();
       // codeToCss(txt);
-      if (next) next(txt);
+      if (next) {
+        console.log("vscode save", txt);
+        next(txt);
+      }
     });
     editor.addCommand(monaco.KeyMod.chord(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_K, monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_F), function (e) {
       editor.trigger('', 'editor.action.formatDocument', null)

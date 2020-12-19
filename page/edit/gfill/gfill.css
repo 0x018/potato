@@ -17,10 +17,18 @@
   font-weight: 600;
   font-size: 18px;
   margin-left: 0.5em;
-  font-size: 40px;
+  font-size: 20px;
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.item.item-bg-translucent .item-edit .index {
+  display: none;
+}
+
+.item.item-bg-translucent:hover .item-edit .index {
+  display: inline-block;
 }
 
 .hidden {
@@ -43,14 +51,43 @@
 .add-box {
   width: 100%;
   height: 100%;
-  /* background-color: red; */
-  position: relative;
+  position: absolute;
   cursor: pointer;
+  z-index: 9999;
+  color: #fff;
+  text-align: center;
 }
+
+.add-box svg {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  position: relative;
+  top: calc(50% - 10px);
+}
+
 .del-box {
   width: 100%;
   height: 100%;
   /* background-color: red; */
-  position: relative;
+  /* position: relative; */
+  position: absolute;
   cursor: pointer;
+  z-index: 0;
+  display: none;
+}
+
+.item:hover .del-box {
+  display: block;
+}
+
+.del-box svg {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  position: relative;
+  float: right;
+  top: 5px;
+  right: 5px;
+  transform: rotate(45deg);
 }

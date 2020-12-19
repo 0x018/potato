@@ -1,0 +1,8 @@
+<nav on:click="{linkClick}">
+  {#each data as item,i}
+  {#if i!==0}
+  <i class="icon separator">{separator||"/"}</i>
+  {/if}
+  <a href="javascript:;" link={item.href}><i class="icon {item.icon}"></i>{item.text}</a>
+  {/each}
+</nav>

@@ -1,10 +1,10 @@
 import { load } from "svelte";
-
+// import breadcrumbs from "../component/breadcrumbs"
 let page = null;
 let search = {};
 
 function getUrl() {
-	
+
 	let [u, s] = (window.location.hash).replace(/#(\/)?/, "").split("?");
 	u = (u || "").split("/")[0].toLowerCase();
 	// url=u;
@@ -24,7 +24,7 @@ function getUrl() {
 
 window.pushState = (data, title, url) => {
 	history.pushState(data, title, url);
-	console.log("pushState","get url")
+	console.log("pushState", "get url")
 	getUrl();
 }
 

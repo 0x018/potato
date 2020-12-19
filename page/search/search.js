@@ -1,10 +1,13 @@
 export let next;
 
 let active = null;
-let component = null;
+// let component = Array(100).fill(0);
 let query = "";
 function output(d) {
-  component = d;
+  if (next) next(d);
+  active = null;
+  query = "";
+  search();
 }
 let list = [];
 
@@ -18,6 +21,10 @@ function search() {
     {
       title: "按钮", sub: "全局按钮样式2", abstract: "全局按钮样式,引入后全局生效.描述描述描述描述描述",
       src: "component/btncfg.js",
+    },
+    {
+      title: "面包屑导航", sub: "组件", abstract: "面包屑导航,组件.描述描述描述描述描述",
+      src: "component/bccfg.js",
     },
   ];
   let world = q

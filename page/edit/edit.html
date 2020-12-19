@@ -6,8 +6,7 @@
   <div class="col line grid-edit clear-after">
     <!-- 布局处理 -->
     <div class="line-500px clear-after">
-      <gform next="{gformChange}"
-        gtr="{gridEdit.rows}" width="{gridEdit.width}" height="{gridEdit.height}" gtc="{gridEdit.columns}"></gform>
+      <gform next="{gformChange}" gtr="{gridEdit.rows}" width="{gridEdit.width}" height="{gridEdit.height}" gtc="{gridEdit.columns}"></gform>
       <label class="scale clear-after">
         <span>预览比例:{scale}</span>
         <input type=range bind:value={scale} min=0.2 step=0.1 max=2>
@@ -20,8 +19,7 @@
     <div class="line-fr clear-after">
       <!-- scale="{gridEdit.scale}" -->
       <div class="span-box" style="{scaleCalc(scale)}">
-        <grid gtr="{spanEdit.rows}" width="{spanEdit.width}" height="{spanEdit.height}" gtc="{spanEdit.columns}"
-          count="{spanEdit.count}" span="{spanEdit.span}" mode="{'span-edit'}" scale="{scale}" next="{d=>{ gfStyle=d; }}">
+        <grid gtr="{spanEdit.rows}" width="{spanEdit.width}" height="{spanEdit.height}" gtc="{spanEdit.columns}" count="{spanEdit.count}" span="{spanEdit.span}" mode="{'span-edit'}" scale="{scale}" next="{d=>{ gfStyle=d; }}">
         </grid>
       </div>
     </div>
@@ -38,7 +36,7 @@
     <!-- {JSON.stringify(gfStyle,null,4)} -->
     <div class="box-fill">
       <div class="span-box" style="{scaleCalc(scale)}">
-        <gfill style="{gfStyle}" let:len="{len}" let:item={item}>
+        <gfill style="{gfStyle}" scale={scale} let:len="{len}" let:item={item} next="{(d)=>{gfillResult=d}}">
         </gfill>
       </div>
     </div>
@@ -67,8 +65,7 @@
     <div class="box" class:active="{ (md?.active == index) }" on:click="{()=>{ sd({active:index,data:item})} }">
       <div class="cut">
         <div class="select-box" style="{scaleCalc(item.scale)}">
-          <grid gtr="{item.rows}" width="{item.width}" height="{item.height}" gtc="{item.columns}"
-            count="{item.count}" span="{item.span}" scale="{item.scale}"></grid>
+          <grid gtr="{item.rows}" width="{item.width}" height="{item.height}" gtc="{item.columns}" count="{item.count}" span="{item.span}" scale="{item.scale}"></grid>
         </div>
       </div>
       <div class="desc">

@@ -64,11 +64,19 @@ async function compilePage(src, name, flag) {
         name: item.name,
       });
     } catch (error) {
+      let message = error.toString().split("\n")[0];
       console.error("%cerror %csvelte.compile error at %c" + item.src,
         "color:#f55;font-weight: bold;",
         "",
         "color:#08f;font-weight: bold;");
-      console.log("     ", error.toString().split("\n")[0]);
+      console.log("      " + message);
+      let [line, start] = message.split(" (").pop()
+        .replace(")", "").split(":").map(v => Number(v.trim()));
+      message = source.split("\n")[line - 1];
+      message = message.slice(0, start) + '%c' + message.slice(start);
+      console.log("      " + message,
+        "color:#f55;font-weight: bold;",
+        "");
       return null;
     };
     return result;
@@ -207,14 +215,14 @@ async function getTextNoError(src) {
 
 
 function copyIndexFile() {
-  console.log("buildjs run copyIndexFile");
+  // console.log("buildjs run copyIndexFile");
   let staticFile = config.copy;
   staticFile.forEach(s => (copy(s, outputFile + s, { overwrite: true })));
 
 }
 
 async function createAppFile() {
-  console.log("buildjs run createAppFile");
+  // console.log("buildjs run createAppFile");
   // index js 编译
   let appFile = config.app;
   let sveltejs = "svelte.internal.mjs"; //svelte/internal/index.mjs
@@ -249,15 +257,15 @@ async function createAppFile() {
 }
 
 async function createPageFile() {
-  console.log("buildjs run createPageFile");
+  // console.log("buildjs run createPageFile");
   // page js 编译
   (config.page || []).forEach(async v => {
     let page = v + "/";
-    console.log("createPageFile", v, outputFile + page)
+    // console.log("createPageFile", v, outputFile + page)
     await Deno.mkdir(outputFile + page, { recursive: true });
-    console.log("createPageFile readFile", page)
+    // console.log("createPageFile readFile", page)
     for await (const dir of Deno.readDir(page)) {
-      console.log("await readDir", page, dir.name);
+      // console.log("await readDir", page, dir.name);
       // if (dir.isFile) 
       compilePage(page + dir.name, v, page);
 
@@ -267,7 +275,7 @@ async function createPageFile() {
 }
 
 async function emptyDir() {
-  console.log("buildjs run emptyDir");
+  // console.log("buildjs run emptyDir");
   // 清空 
   // console.log("清空",outputFile)
   await Deno.mkdir(outputFile, { recursive: true });

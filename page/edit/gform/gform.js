@@ -30,6 +30,8 @@ function setGtr() {
         rowNum = r.length;
         rows = Array(maxRow).fill(null).map((v, i) => ({ value: r[i] || "100px", edit: null }));
     }
+    width = width || "fit-content";
+    height = height || "fit-content";
 }
 $: __watchGtc = setGtc() || gtc;
 function setGtc() {
