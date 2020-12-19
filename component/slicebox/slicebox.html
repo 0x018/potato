@@ -1,0 +1,17 @@
+<div class="wrapper" id="{id}">
+  <script type="text/javascript" src="/assets/slicebox/js/modernizr.custom.46884.js"></script>
+  <script type="text/javascript" src="/assets/slicebox/js/jquery.js"></script>
+  <ul id="sb-slider" class="sb-slider">
+    {#each data as item}
+    <li>
+      <a href={item?.link} target="{item?.target||target}">
+        <img src={item?.img} alt="{item.alt||''}" />
+      </a>
+      <div class="sb-description">
+        <h3>{item.description}</h3>
+      </div>
+    </li>
+    {/each}
+  </ul>
+  <script type="text/javascript" src="/assets/slicebox/js/jquery.slicebox.js"></script>
+</div>
