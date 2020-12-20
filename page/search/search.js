@@ -26,6 +26,10 @@ function search() {
       title: "图片轮播", sub: "组件", abstract: "图片轮播 3d,组件.描述描述描述描述描述",
       src: "component/slccfg.js",
     },
+    {
+      title: "侧边菜单栏", sub: "组件", abstract: "侧边菜单栏,树型,组件.描述描述描述描述描述",
+      src: "component/menucfg.js",
+    },
   ];
   let world = q
     .replace(/[\,\.\; \!\@\#\$\%\^\*]+/g, ' ')

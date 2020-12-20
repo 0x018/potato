@@ -1,0 +1,25 @@
+<div class="demo-box">
+	<div class="demo preview">
+		{#await load(link,"component")}
+		<p>...load...</p>
+		{:then value}
+		{initCpt(value)}
+		<svelte:component this={value} {...data}></svelte:component>
+		{:catch error}
+		<p>load css error: {error.message}</p>
+		{/await}
+
+	</div>
+	<div class="config" class:show={active}>
+		<div class="preview">
+			<p>code:</p>
+			<pre>{exampleCode}</pre>
+			<p>example:</p>
+			<svelte:component this={cpt} {...data}></svelte:component>
+		</div>
+		<form action="javascript:;" on:submit={submit} on:change={formChange} class="config-form">
+
+			<input type="submit" value="确定">
+		</form>
+	</div>
+</div>

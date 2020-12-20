@@ -4,15 +4,15 @@
 		<div class="label" style="padding-left:calc({deep} * {indent});">
 			<div class="content" on:click={()=>{ childClick(item) }}>
 				{#if hasChild(item.id)}
-				<span class="icon switch">></span>
-				<span class="icon {item.icon||picon}"></span>
+				<span class="fa switch fa-angle-right"></span>
+				<span class="fa picon {item.icon||picon}"></span>
 				{:else}
-				<span class="icon {item.icon||leafIcon}"></span>
+				<span class="fa leafIcon {item.icon||leafIcon}"></span>
 				{/if}
 				<span class="text">{item.label}</span>
 			</div>
 		</div>
-		{#if item.show}
+		{#if !!item.show}
 		<svelte:self data={data} pid={item.id} deep="{deep + 1}" />
 		{/if}
 	</div>

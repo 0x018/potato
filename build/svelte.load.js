@@ -21,7 +21,7 @@ function load(url, opt) {
                name: opt
             };
          }
-         console.log("opt", url, opt);
+         // console.log("opt", url, opt);
          // let result = null;
          switch (opt.type || "") {
             case "css":
@@ -29,7 +29,7 @@ function load(url, opt) {
                break;
             case "":
                let name = opt.name;
-               console.log("opt name", url, name);
+               // console.log("opt name", url, name);
                let ccc;
                eval(
                   `let pushState = window.pushState;` +

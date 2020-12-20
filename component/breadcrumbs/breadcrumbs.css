@@ -21,3 +21,7 @@ nav>a:hover {
   margin: 0;
   color: rgba(0, 0, 0, .45);
 }
+
+a>.fa {
+  margin-right: 0.2em;
+}

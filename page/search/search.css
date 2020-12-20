@@ -59,6 +59,8 @@ p.title {
   height: 20px;
   float: right;
   margin: -24px 5px 0 0;
+  font-size: 16px;
+  color: rgb(64, 169, 255);
 }
 
 .item :global(em.high-light) {

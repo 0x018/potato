@@ -9,7 +9,7 @@ function initCpt(c) {
 }
 let data = {
   data: [ // 演示 href null
-    { href: null, text: "Home", icon: "" },
+    { href: null, text: "Home", icon: "fa-home" },
     { href: null, text: "Edit", icon: "" },
     { href: null, text: "Home", icon: "" },
     { href: null, text: "Home", icon: "" },

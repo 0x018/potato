@@ -20,13 +20,17 @@
 	background-color: red;
 }
 
-.menu-list>.menu-item>.label>.menu-list>.menu-item>.label {}
+.fa::before {
+	display: block;
+	width: 12px;
+	height: 12px;
+}
 
-.icon.switch {
+.fa.switch {
 	position: absolute;
 	z-index: 5;
 	top: 0;
-	left: -0.7em;
+	left: -0.2em;
 	height: 100%;
 	/* line-height: 100%; */
 	padding: 0.5em 0;
@@ -35,6 +39,16 @@
 	cursor: pointer;
 }
 
-.menu-item>.label>.content:hover>.icon.switch {
+.menu-item>.label>.content:hover>.fa.switch {
 	color: #fff;
+}
+
+.fa.picon {
+	margin-left: 0.7em;
+	margin-right: -0.3em;
+}
+
+.fa.leafIcon {
+	margin-left: 0.7em;
+	margin-right: -0.3em;
 }

@@ -19,7 +19,7 @@ let layoutArr = [
   },
   {
     width: "100%", height: "100%",
-    rows: "80px 1fr", columns: "190px 1fr",
+    rows: "50px 1fr", columns: "190px 1fr",
     count: 3, desc: "厂字形-1-2", scale: 0.3,
     span: [
       { index: 1, r: 1, c: 2 }
@@ -27,7 +27,7 @@ let layoutArr = [
   },
   {
     width: "100%", height: "100%",
-    rows: "80px 1fr", columns: "1fr 190px",
+    rows: "50px 1fr", columns: "1fr 190px",
     count: 3, desc: "厂字形-1-2", scale: 0.3,
     span: [
       { index: 1, r: 1, c: 2 }
