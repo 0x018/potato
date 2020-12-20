@@ -338,10 +338,9 @@ setTimeout(function () {
 			_setSize: function () {
 
 				var $visible = this.$items.eq(this.current).find('img');
-
 				this.size = {
-					width: $visible.width(),
-					height: $visible.height()
+					width: $visible[0].width,
+					height: $visible[0].height
 				};
 
 			},

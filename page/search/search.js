@@ -19,12 +19,12 @@ function search() {
       src: "component/btncfg.js",
     },
     {
-      title: "按钮", sub: "全局按钮样式2", abstract: "全局按钮样式,引入后全局生效.描述描述描述描述描述",
-      src: "component/btncfg.js",
-    },
-    {
       title: "面包屑导航", sub: "组件", abstract: "面包屑导航,组件.描述描述描述描述描述",
       src: "component/bccfg.js",
+    },
+    {
+      title: "图片轮播", sub: "组件", abstract: "图片轮播 3d,组件.描述描述描述描述描述",
+      src: "component/slccfg.js",
     },
   ];
   let world = q

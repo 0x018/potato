@@ -13,7 +13,7 @@ export let data = [
 let id = (Math.random() + "").replace("0.", "").slice(0, 5);
 
 onMount(async () => {
-  setTimeout(function () { slicebox() }, 300)
+  setTimeout(function () { slicebox() }, 400)
 })
 
 function slicebox() {

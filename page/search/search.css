@@ -6,12 +6,16 @@ p.title {
 
 .list {
   /* max-height: 100%; */
+  position: relative;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
 }
 
 .list>.item {
   margin-bottom: 1em;
   border: 1px solid #f0f0f0;
   padding: 0.5em;
+  position: relative;
 }
 
 .list>.item>.item-header {

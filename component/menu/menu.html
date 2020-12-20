@@ -1,0 +1,20 @@
+<div class="menu-list deep-{deep}">
+	{#each list as item,i}
+	<div class="menu-item">
+		<div class="label" style="padding-left:calc({deep} * {indent});">
+			<div class="content" on:click={()=>{ childClick(item) }}>
+				{#if hasChild(item.id)}
+				<span class="icon switch">></span>
+				<span class="icon {item.icon||picon}"></span>
+				{:else}
+				<span class="icon {item.icon||leafIcon}"></span>
+				{/if}
+				<span class="text">{item.label}</span>
+			</div>
+		</div>
+		{#if item.show}
+		<svelte:self data={data} pid={item.id} deep="{deep + 1}" />
+		{/if}
+	</div>
+	{/each}
+</div>

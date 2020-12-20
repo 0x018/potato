@@ -1,0 +1,40 @@
+.menu-list {
+	padding: 0;
+	margin: 0;
+}
+
+.menu-item>.label {
+	box-sizing: border-box;
+	padding: 0;
+	width: 100%;
+	display: block;
+}
+
+.menu-item>.label>.content {
+	position: relative;
+	cursor: pointer;
+	padding: 0.5em 0;
+}
+
+.menu-item>.label:hover {
+	background-color: red;
+}
+
+.menu-list>.menu-item>.label>.menu-list>.menu-item>.label {}
+
+.icon.switch {
+	position: absolute;
+	z-index: 5;
+	top: 0;
+	left: -0.7em;
+	height: 100%;
+	/* line-height: 100%; */
+	padding: 0.5em 0;
+	vertical-align: middle;
+	text-align: center;
+	cursor: pointer;
+}
+
+.menu-item>.label>.content:hover>.icon.switch {
+	color: #fff;
+}

@@ -1,0 +1,9 @@
+.config {
+  max-height: 0;
+  overflow-y: hidden;
+  padding: 0 10px;
+}
+
+.config.show {
+  max-height: unset;
+}
