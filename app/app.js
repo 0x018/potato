@@ -1,10 +1,21 @@
 import { load } from "svelte";
+
+let route = null;
+fetch("/assets/route.json").then(r => r.json()).then(v => {
+	route = v;
+})
+// import * as route from './route.json'
 // import breadcrumbs from "../component/breadcrumbs"
 let page = null;
 let search = {};
 
 function getUrl() {
-
+	if (!route) {
+		setTimeout(function () {
+			getUrl();
+		}, 200)
+		return;
+	}
 	let [u, s] = (window.location.hash).replace(/#(\/)?/, "").split("?");
 	u = (u || "").split("/")[0].toLowerCase();
 	// url=u;
@@ -12,14 +23,7 @@ function getUrl() {
 	if (!s) search = {};
 	else
 		search = Object.fromEntries(decodeURIComponent(s).split("&").map(v => v.split("=")));
-	page = {
-		"": "page/home.js",
-		"home": "page/home.js",
-		"edit": "page/edit.js",
-		"preview": "page/preview.js",
-		"search": "page/search.js",
-		"304": "304.js"
-	}[u];
+	page = route[u];
 }
 
 window.pushState = (data, title, url) => {

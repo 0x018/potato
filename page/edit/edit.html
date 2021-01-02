@@ -52,7 +52,8 @@
   <div class="col line clear-after">
     {JSON.stringify(url)}
     <input class="next" type="button" value="上一步(清空当前数据)" on:click={()=>changeStep(1)}>
-    <input class="next" type="button" value="下一步" on:click={()=>changeStep(3)}>
+    <input class="next" type="button" value="预览" on:click={()=>changeStep(3)}>
+    <input class="next" type="button" value="生成页面" on:click={()=>changeStep(4)}>
   </div>
   {/if}
 </div>
@@ -75,5 +76,14 @@
     {/each}
   </div>
   <button class="modal-btn" disabled="{!md}" on:click="{()=>{selectLayout(md.data||{});}}">确定</button>
+  <div class="clear"></div>
+</modal>
+
+
+<modal show="{show2}" let:data={md} let:set={sd}>
+  <p class="title">页面生成</p>
+  <label>页面名称:<input type="text" on:input="{(e)=>{ sd({...(md||{}),name:e.target.value})} }"></label>
+  <label>匹配路由:<input type="text" on:input="{(e)=>{ sd({...(md||{}),route:e.target.value})} }"></label>
+  <button class="modal-btn" disabled="{!md || !md.name || !md.route}" on:click="{()=>{createPage(md||{});}}">确定</button>
   <div class="clear"></div>
 </modal>

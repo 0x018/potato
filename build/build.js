@@ -116,6 +116,7 @@ async function compilePage(src, name, flag) {
 
   let js = code.filter(v => v.type !== 'css').map(v => {
     return (
+      `// depend["${v.name}","${v.src}"]\n` +
       `let ${v.name} = (function () {\n` +
       `  ${removeImportExport(v.code).replace(/\n/g, "\n  ")};\n` +
       `  return ${v.name};\n` +

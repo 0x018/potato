@@ -70,6 +70,11 @@ function changeStep(i) {
       window.open(`/#/preview?id=${url?.id}`);
       break;
     }
+    case 4: {
+      open2();
+
+      break;
+    }
     default:
       console.error("changeStep 未定义", i);
       break;
@@ -86,6 +91,7 @@ function gformChange(e) {
   spanEdit.height = e.height;
   spanEdit.rows = e.rows;
   spanEdit.columns = e.columns;
+  spanEdit = spanEdit;
 }
 
 function scaleCalc(s) {
@@ -101,6 +107,33 @@ function close() {
   show.next(false);
 }
 
+// modal 生成页面
+let show2 = new rxjs.Subject();
+function open2() {
+  show2.next(true);
+}
+function createPage(form) {
+  // debugger
+  show2.next(false);
+  // debugger
+  // 弹窗=> 填路由, 名字
+  // let id = url.id;
+  let data = {
+    count: gfillResult.count, // html
+    grid: JSON.stringify(gfillResult.grid), // html
+    css: gfStyle, // css
+    name: form.name,
+    route: form.route
+  };
+
+  fetch("/page/", { method: 'PUT', body: JSON.stringify(data) }).then(r => r.json()).then(r => {
+    if (r.code == 200)
+      pushState("/#/home/");
+    else {
+      alert(r.message);
+    }
+  });
+}
 
 onMount(() => {
   if (url.id) {

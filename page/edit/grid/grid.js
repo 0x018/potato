@@ -32,7 +32,9 @@ function setGrid() {
       mc: null, // max-c
       mr: null, // max-r
     }
-  })
+  });
+  // if (!count)
+  spanChange();
 }
 
 
@@ -211,10 +213,11 @@ function outPutCount(gr, gc, span) {
     if (cycleCount++ == 1000) return;
     return false;
   });
-
-  grid = result;
-  _calc_count = result.length;
-  console.log("edit span ", result.length, result)
+  if (result.length !== grid.length) {
+    grid = result;
+    _calc_count = result.length;
+    console.log("edit span ", result.length, result)
+  }
 }
 
 

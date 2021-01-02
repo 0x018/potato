@@ -1,6 +1,6 @@
 // svelte.load.js 
 function load(url, opt) {
-
+   if (!url) return new Promise((resolve, reject) => { /**never */ });
    return fetch(url, {
       headers: {
          // "Cache-Control: no-cache"
