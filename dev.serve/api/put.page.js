@@ -9,7 +9,7 @@ export function create(data) {
 	// 	route: "bb"
 	// }
 	console.log("create", data)
-	let dir = "/products/" + data.name + "/";
+	let dir = "./products/" + data.name + "/";
 	let f = false;
 	try {
 		// f = 
@@ -27,7 +27,7 @@ export function create(data) {
 		});
 		return;
 	}
-	Deno.mkdir(dir, { recursive: true });
+
 	let grid = (data.grid || []).map(v => {
 		//  有component 和 没有component
 		if (v.component) {
@@ -67,19 +67,27 @@ export function create(data) {
 		}).join(""),
 	}
 
-	let route = `"${route}": "products/${name}.js",\n`;
+	let route = `,\n  "${data.route}": "products/${data.name}.js"\n}`;
 	console.log("add route", route);
 	// console.log("add page ", file.html, "\n", file.js);
+	console.log("mkdir", dir);
+	Deno.mkdir(dir, { recursive: true }).then(() => {
+		console.log("writeTextFile", dir + data.name, ".js,.html,.css");
+		Deno.writeTextFileSync(dir + data.name + '.js', file.js);
+		Deno.writeTextFileSync(dir + data.name + '.html', file.html);
+		Deno.writeTextFileSync(dir + data.name + '.css', file.css);
+		let routeFile = "./assets/route.json";
+		let text = Deno.readTextFileSync(routeFile);
+		text = text.replace(/(\n\}\s?$)/, route);
+		Deno.writeTextFileSync(routeFile, text);
+		this.respond({
+			status: 200,
+			headers: new Headers({
+				"content-type": "application/json",
+			}),
+			body: JSON.stringify({ code: 200, message: '完成' }),
+		});
+	})
 
-	await Deno.writeTextFile(dir + data.name + '.js', file.js);
-	await Deno.writeTextFile(dir + data.name + '.html', file.html);
-	await Deno.writeTextFile(dir + data.name + '.css', file.css);
 
-	this.respond({
-		status: 200,
-		headers: new Headers({
-			"content-type": "application/json",
-		}),
-		body: JSON.stringify({ code: 200, message: '完成' }),
-	});
 }

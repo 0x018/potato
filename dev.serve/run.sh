@@ -21,7 +21,7 @@ fi
 # echo "temp $dir"
 
 deno run --unstable \
---allow-read --allow-net --allow-run \
+--allow-read  --allow-write --allow-net --allow-run \
 --allow-env --no-check --import-map "${dir}imports.json" \
 ./dev.serve/server.ts "${dir}" &
 
