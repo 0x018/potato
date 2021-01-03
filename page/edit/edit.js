@@ -114,21 +114,23 @@ function open2() {
 }
 function createPage(form) {
   // debugger
-  show2.next(false);
   // debugger
   // 弹窗=> 填路由, 名字
   // let id = url.id;
   let data = {
     count: gfillResult.count, // html
-    grid: JSON.stringify(gfillResult.grid), // html
+    grid: gfillResult.grid, // html
     css: gfStyle, // css
     name: form.name,
     route: form.route
   };
 
   fetch("/page/", { method: 'PUT', body: JSON.stringify(data) }).then(r => r.json()).then(r => {
-    if (r.code == 200)
+    if (r.code == 200) {
+      show2.next(false);
+
       pushState("/#/home/");
+    }
     else {
       alert(r.message);
     }
