@@ -300,16 +300,17 @@ async function watchFile() {
       });
   }
 }
-
+let _fresh = null;
 fileWatch.pipe(
   // rx.operators.bufferTime(800),
   rx.operators.distinctUntilChanged(),
   rx.operators.delay(800),
-  rx.operators.filter(data => !!data)
+  rx.operators.filter(data => !!data),
   // rx.operators.map(v=>v.filter(a=>!!a)),
   // rx.operators.debounceTime(800),
   // rx.operators.switchMap(() => fileWatch.pipe(rx.operators.scan((acc, curr) => acc.add(curr), new Set())))
 ).subscribe(val => {
+  if (_fresh) { clearTimeout(_fresh); }
   console.log("do ", val);
   copyIndexFile();
   // if (val == config.app) {
@@ -317,7 +318,8 @@ fileWatch.pipe(
   // } else // if (val.indexOf("/" + config.page + "/") > -1) {
   createPageFile();
   // } // else 
-  setTimeout(() => {
+
+  _fresh = setTimeout(() => {
     fetch(`http://localhost:${config.port}/refresh/`, { method: "POST" }).then(v => {
       // console.log("refresh",v)
     });

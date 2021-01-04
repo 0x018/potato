@@ -82,8 +82,15 @@
 
 <modal show="{show2}" let:data={md} let:set={sd}>
   <p class="title">页面生成</p>
-  <label>页面名称:<input type="text" on:input="{(e)=>{ sd({...(md||{}),name:e.target.value})} }"></label>
-  <label>匹配路由:<input type="text" on:input="{(e)=>{ sd({...(md||{}),route:e.target.value})} }"></label>
-  <button class="modal-btn" disabled="{!md || !md.name || !md.route}" on:click="{()=>{createPage(md||{});}}">确定</button>
+  <div class="creat-page input-box">
+    填写:
+    <label>页面名称:<input type="text" on:input="{(e)=>{ sd({...(md||{}),name:e.target.value})} }"></label>
+    <label>匹配路由:<input type="text" on:input="{(e)=>{ sd({...(md||{}),route:e.target.value})} }" placeholder="匹配不能与右侧重复"></label>
+  </div>
+  <div class="creat-page">
+    当前路由:
+    <pre>{JSON.stringify(routeJson, null, 4)||"..."}</pre>
+  </div>
   <div class="clear"></div>
+  <button class="modal-btn" disabled="{creatPageCheck(md)}" on:click="{()=>{createPage(md||{});}}">确定</button>
 </modal>

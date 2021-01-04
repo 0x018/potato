@@ -1,59 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset='utf-8'>
-		<meta name='viewport' content='width=device-width,initial-scale=1'>
 
-		<title>Svelte app</title>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
 
-		<link rel='icon' type='image/png' href='/favicon.png'>
-		<link rel='stylesheet' href='assets/global.css'>
-		<link rel='stylesheet' href='/assets/font-awesome/css/font-awesome.min.css'>
+	<title>Svelte app</title>
 
-		<script src="https://unpkg.com/rxjs@6.6.0/bundles/rxjs.umd.min.js"></script>
+	<link rel='icon' type='image/png' href='/favicon.png'>
+	<link rel='stylesheet' href='assets/global.css'>
+	<link rel='stylesheet' href='/assets/font-awesome/css/font-awesome.min.css'>
 
-		<!-- vscode -->
-		<script>
-		var require = { 
-			paths: { vs: '/assets/vs' } , 
-			'vs/nls': { availableLanguages: {'*':(navigator.language || navigator.browserLanguage).toLowerCase()} }
+	<script src="https://unpkg.com/rxjs@6.6.0/bundles/rxjs.umd.min.js"></script>
+
+	<!-- vscode -->
+	<script>
+		var require = {
+			paths: { vs: '/assets/vs' },
+			'vs/nls': { availableLanguages: { '*': (navigator.language || navigator.browserLanguage).toLowerCase() } }
 		};</script>
-		<link
-			rel="stylesheet"
-			data-name="vs/editor/editor.main"
-			href="assets/vs/editor/editor.main.css" />
+	<link rel="stylesheet" data-name="vs/editor/editor.main" href="assets/vs/editor/editor.main.css" />
 
-		<script src="assets/vs/loader.js"></script>
-		<script src="assets/vs/editor/editor.main.nls.js"></script>
-		<script src="assets/vs/editor/editor.main.js"></script>
-		<script src="assets/vs/format/css-format-monaco.min.js"></script>
-		<!-- vscode end-->
-		<!-- dev ws -->
-		<script>
+	<script src="assets/vs/loader.js"></script>
+	<script src="assets/vs/editor/editor.main.nls.js"></script>
+	<script src="assets/vs/editor/editor.main.js"></script>
+	<script src="assets/vs/format/css-format-monaco.min.js"></script>
+	<!-- vscode end-->
+	<!-- dev ws -->
+	<script>
 		var wsUrl = `ws://localhost:3000/`;
 		console.log('ws url', wsUrl);
-
-		let callback={
-				refresh:()=>{ window.location.reload();}
+		window.refresh = true;
+		let callback = {
+			refresh: () => {
+				console.log("refresh", window.refresh);
+				if (window.refresh) {
+					setTimeout(function () { window.location.reload(); }, 500)
+				}
 			}
-    var subject = rxjs.webSocket.webSocket({
-      url: wsUrl,
-      // deserializer: event => event.data, // 接收的结果自动解析
-      serializer: (value) => JSON.stringify(value), // 发送的数据自动打包
+		}
+		var subject = rxjs.webSocket.webSocket({
+			url: wsUrl,
+			// deserializer: event => event.data, // 接收的结果自动解析
+			serializer: (value) => JSON.stringify(value), // 发送的数据自动打包
 		});
 		subject.subscribe(
-      data => {
-        console.info('message received: ' + data);
-        callback[data](data);
+			data => {
+				console.info('message received: ' + data);
+				callback[data](data);
 			});
-			
-			subject.next({id:'dev'})
+
+		subject.next({ id: 'dev' })
 	</script>
-		<!-- dev ws end-->
-		<!-- svelte js-->
-		<script defer src='index.js'></script>
-		<!-- svelte js end-->
-	</head>
-	<body>
-	</body>
+	<!-- dev ws end-->
+	<!-- svelte js-->
+	<script defer src='index.js'></script>
+	<!-- svelte js end-->
+</head>
+
+<body>
+</body>
+
 </html>

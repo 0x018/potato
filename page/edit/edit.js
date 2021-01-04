@@ -110,6 +110,7 @@ function close() {
 // modal 生成页面
 let show2 = new rxjs.Subject();
 function open2() {
+  getRoute();
   show2.next(true);
 }
 function createPage(form) {
@@ -124,16 +125,18 @@ function createPage(form) {
     name: form.name,
     route: form.route
   };
-
+  window.refresh = false;
+  console.log("set refresh false");
   fetch("/page/", { method: 'PUT', body: JSON.stringify(data) }).then(r => r.json()).then(r => {
     if (r.code == 200) {
       show2.next(false);
-
-      pushState("/#/home/");
+      pushState(null, "", "/#/home/?load=true");
     }
     else {
       alert(r.message);
     }
+    window.refresh = true;
+    console.log("set refresh true");
   });
 }
 
@@ -147,4 +150,13 @@ onMount(() => {
     step = 1;
   }
 });
-
+function creatPageCheck(md) {
+  return !md || !md.name || !md.route || Object.keys(routeJson || {}).indexOf(md.route) > -1;
+}
+let routeJson = null;
+function getRoute() {
+  routeJson = null;
+  fetch("assets/route.json").then(r => r.json()).then(d => {
+    routeJson = d;
+  });
+}
