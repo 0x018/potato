@@ -2,7 +2,7 @@
 
 
 // import { loadJson } from "./loadJson.ts";
-import { copy } from "https://deno.land/std/fs/mod.ts";
+import { copy, copySync } from "https://deno.land/std/fs/mod.ts";
 import { loadCode } from "./loadCode.js";
 const rx = (await loadCode("dev.serve/rxjs.umd.js").js({})).rxjs;
 
@@ -17,18 +17,21 @@ let outputFile = config.dist + "/run/"; // 文件输出目录
 const svelte = (await loadCode(buildPath + 'compiler.js').js()).svelte
 let autoFun = (code, arg) => `(function (${arg || ""}) {\n  'use strict';\n${code}\n}(${arg || ""}));`
 
+let dpdcRc = []; //dependenceRecord
 await emptyDir();
 
 copyIndexFile();
 
 createAppFile();
 
-createPageFile();
+await createPageFile();
+
 watchFile();
 
 
 
 function removeImportExport(str) {
+  if (!str) return "";
   let start = str.indexOf("\nfunction");
   let start2 = str.indexOf("\nclass");
   start = (start == -1 ? start2 : start);
@@ -86,6 +89,7 @@ async function compilePage(src, name, flag) {
     let item = code[i];
     // console.log("read file ", item.src)
     let source = await getSvelte(item.src); // getSvelte 
+    if (null == source) { item.code = null; item.type = null; continue; }
     // item.name = item.name || item.;
     // console.log("compile ",name, source)
     if (onlyCss(item.src)) {
@@ -94,6 +98,7 @@ async function compilePage(src, name, flag) {
     } else {
       let result = compileSvelte(source, item);
       if (result) {
+        item.type = 'js';
         item.code = `/* ${item.src} */\n` + result.js.code;
         // if(item.name=="edit"||)
         // console.log("page ",item.name,item.code)
@@ -103,6 +108,12 @@ async function compilePage(src, name, flag) {
           name: v.split('/').pop().split('.').shift().replace(/^./, str => str.toUpperCase())
 
         })));
+        dpdcRc = dpdcRc.concat(deps.map(v => ({ name: v.name, pname: item.name, src: v.src, parent: item.src })));
+        // ;
+        // deps.map(v => {
+        //   dpdcRc.push({ src: v.src, name: v.name, parent: item.src });
+        // });
+        // console.log("set dpdc", deps.length, dpdcRc.length);
         // console.log("deps",deps)
         code = code.concat(deps);
         // console.log("compilePage", i, code.length);
@@ -114,7 +125,7 @@ async function compilePage(src, name, flag) {
   let key = Array.from(new Set(code.map(v => v.name)));
   code = key.map(k => code.find(c => c.name == k));
 
-  let js = code.filter(v => v.type !== 'css').map(v => {
+  let js = code.filter(v => v.type === 'js').map(v => {
     let name = "";
     if (v.name == "products") name = "page";
     return (
@@ -131,10 +142,10 @@ async function compilePage(src, name, flag) {
   if (flag !== true) {
     let page = flag + "/";
     if (js) {
-      Deno.writeTextFile(outputFile + page + fileName + ".js", js);
+      await Deno.writeTextFile(outputFile + page + fileName + ".js", js);
     }
     if (css) {
-      Deno.writeTextFile(outputFile + page + fileName + ".css", css);
+      await Deno.writeTextFile(outputFile + page + fileName + ".css", css);
     }
   } else {
     console.log("compilePage text", js.length)
@@ -174,6 +185,7 @@ async function getSvelte(src) {
       return await Deno.readTextFile(src);
     if (/\.css$/.test(src))
       return await Deno.readTextFile(src);
+    if (/\.gitignore$/.test(src)) return null;
     else {
       console.error("build.js getSvelte Untreated", src)
       return "/* build.js getSvelte Untreated */";
@@ -220,7 +232,7 @@ async function getTextNoError(src) {
 function copyIndexFile() {
   // console.log("buildjs run copyIndexFile");
   let staticFile = config.copy;
-  staticFile.forEach(s => (copy(s, outputFile + s, { overwrite: true })));
+  staticFile.forEach(s => (copySync(s, outputFile + s, { overwrite: true })));
 
 }
 
@@ -260,6 +272,7 @@ async function createAppFile() {
 }
 
 async function createPageFile() {
+  dpdcRc = [];
   // console.log("buildjs run createPageFile");
   // page js 编译
   (config.page || []).forEach(async v => {
@@ -270,19 +283,33 @@ async function createPageFile() {
     for await (const dir of Deno.readDir(page)) {
       // console.log("await readDir", page, dir.name);
       // if (dir.isFile) 
+      // await 
       compilePage(page + dir.name, v, page);
 
     }
   });
-
+  setTimeout(function () {
+    // console.log("dpdc", dpdcRc)
+    Deno.writeTextFile(outputFile + "assets/dpdc.json", JSON.stringify(dpdcRc, null, 4));
+  }, 1000);
 }
 
 async function emptyDir() {
   // console.log("buildjs run emptyDir");
   // 清空 
   // console.log("清空",outputFile)
-  await Deno.mkdir(outputFile, { recursive: true });
-  await Deno.remove(outputFile, { recursive: true });
+  // await Deno.mkdir(outputFile, { recursive: true });
+  console.log("删除文件夹", outputFile);
+  try {
+    await Deno.remove(outputFile, { recursive: true });
+  } catch (e) {
+    if (e instanceof Deno.errors.NotFound) {
+      // do nothing
+      // console.log("do nothing");
+    } else {
+      console.error("文件删除失败", outputFile, e);
+    }
+  }
   await Deno.mkdir(outputFile, { recursive: true });
   // await Deno.remove(config.dist.build, { recursive: true });
   // await Deno.mkdir(config.dist.build, { recursive: true });
@@ -309,14 +336,17 @@ fileWatch.pipe(
   // rx.operators.map(v=>v.filter(a=>!!a)),
   // rx.operators.debounceTime(800),
   // rx.operators.switchMap(() => fileWatch.pipe(rx.operators.scan((acc, curr) => acc.add(curr), new Set())))
-).subscribe(val => {
+).subscribe(async (val) => {
   if (_fresh) { clearTimeout(_fresh); }
   console.log("do ", val);
+  console.log("empty dpdcRc")
+  dpdcRc = [];
+  // await emptyDir();
   copyIndexFile();
   // if (val == config.app) {
   createAppFile();
   // } else // if (val.indexOf("/" + config.page + "/") > -1) {
-  createPageFile();
+  await createPageFile();
   // } // else 
 
   _fresh = setTimeout(() => {
