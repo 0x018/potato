@@ -108,7 +108,11 @@ async function compilePage(src, name, flag) {
           name: v.split('/').pop().split('.').shift().replace(/^./, str => str.toUpperCase())
 
         })));
-        dpdcRc = dpdcRc.concat(deps.map(v => ({ name: v.name, pname: item.name, src: v.src, parent: item.src })));
+        dpdcRc = dpdcRc.concat(deps.map(v => ({
+          name: v.name, pname: item.name,
+          src: v.src, parent: item.src,
+          type: "component"
+        })));
         // ;
         // deps.map(v => {
         //   dpdcRc.push({ src: v.src, name: v.name, parent: item.src });
@@ -120,6 +124,17 @@ async function compilePage(src, name, flag) {
       } else return null;
     }
 
+  }
+  let t = code[0].type
+  if (t && name != "app") {
+    let type = null;
+    if (t == "css") type = "css";
+    if (!type && name == "component") type = "component";
+    if (!type && name) type = "page";
+    dpdcRc.push({
+      src: src, name: src.split("/").pop(), pname: null, parent: null,
+      type: type
+    });
   }
   code = code.reverse();
   let key = Array.from(new Set(code.map(v => v.name)));

@@ -1,2 +1,41 @@
-
-<h1>{name} page!</h1>
+<div class="box">
+	<div class="bg">
+		<div class="info">
+			<!-- debugger -->
+			<h1>{name} page! {dpdc.length},</h1>
+			<p>{pageTag.length}:{JSON.stringify(pageTag)}</p><br>
+			<p>{cptTag.length}:{JSON.stringify(cptTag)}</p><br>
+			<pre>{JSON.stringify(dpdc.filter(v=>v.pname).slice(0,1),null,4)}</pre>
+			<pre>{JSON.stringify(line.slice(0,1),null,4)}</pre>
+		</div>
+		<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
+			<defs>
+				<marker id='markerArrow' markerWidth='13' markerHeight='5' 
+				refx='13' refy='2' orient='auto'>
+					<path d='M 0 0 L13,2.5 L0,5 L0,0' style='fill:black' />
+				</marker>
+			</defs>
+			{#each line as item}
+			<path d="{item.d}" alt="{item.id}" stroke="black" marker-end='url(#markerArrow)' fill="transparent" />
+			{/each}
+		</svg>
+	</div>
+	<div class="content" bind:this={content}>
+		<div class="page-box">
+			{#each pageTag as key,i}
+			<div class="page-view" tag="{key}">
+				<div class="title">{getNode(key).name}</div>
+				<div class="src">{key}</div>
+			</div>
+			{/each}
+		</div>
+		<div class="component-box">
+			{#each cptTag as key,i}
+			<div class="component-tag" tag="{key}">
+				<div class="title" title="{key}" alt="{key}">{getNode(key).name}</div>
+				<!-- <div class="src">{key}</div> -->
+			</div>
+			{/each}
+		</div>
+	</div>
+</div>
