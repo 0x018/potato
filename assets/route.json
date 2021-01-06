@@ -3,5 +3,6 @@
 	"home": "page/home.js",
 	"edit": "page/edit.js",
 	"preview": "page/preview.js",
-	"search": "page/search.js"
+	"search": "page/search.js",
+  "example": "products/example.js"
 }

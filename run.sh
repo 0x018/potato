@@ -15,14 +15,14 @@ function killAll {
 # 4 5 6 7 8  11 12 13 14  16 17 18 19 20
 trap killAll  1 2 3 9 15
 # echo "$$ " > "${dir}cpid"
-while [[ $# -ge 1 ]]; do
-    case $1 in
-        -open|--open )
-            open="true"
-            shift
-        ;;
-    esac
-done
+# while [[ $# -ge 1 ]]; do # 会引起第一次编译bug
+#     case $1 in
+#         -open|--open|--o|-o )
+#             open="true"
+#             shift
+#         ;;
+#     esac
+# done
 
 deno -V
 if [ $? -ne 1 ];then
@@ -33,7 +33,7 @@ if [ $? -ne 1 ];then
     # 返回结果存入3变量 part-2
     dir=${result[0]};
     port=${result[1]};
-    cli="${result[2]} http://localhost:$port/";
+    cli="${result[2]} http://localhost:$port/#/home";
     
     # 关闭已经占用的端口号
     pid=`lsof -i:"$port" |awk 'NR>1{print $2}'`

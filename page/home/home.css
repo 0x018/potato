@@ -21,6 +21,8 @@ h1 {
 	position: relative;
 	height: 100%;
 	overflow: hidden;
+	max-width: 800px;
+	/* margin: 0 auto; */
 }
 
 .box .bg, .box .content {
@@ -30,6 +32,7 @@ h1 {
 	right: 0;
 	bottom: 0;
 	width: 100%;
+	/* padding: 0 25%; */
 	height: 100%;
 }
 
@@ -52,10 +55,26 @@ h1 {
 	background: rgba(255, 255, 255, 0.5);
 }
 
+.load::after {
+	content: '...load...';
+	width: 100vw;
+	height: 100vh;
+	background: rgba(255, 255, 255, 0.95);
+	position: fixed;
+	z-index: 1000;
+	display: block;
+	top: 0;
+	left: 0;
+	text-align: center;
+	line-height: 100vh;
+	font-size: 20px;
+}
+
 .page-box {
 	position: relative;
 	width: 150px;
 	float: left;
+	margin-left: 200px;
 }
 
 .page-view {
@@ -66,7 +85,9 @@ h1 {
 	position: relative;
 	cursor: default;
 }
-
+.page-view.new-page{
+	box-shadow: 0 0 10px 2px #0af;
+}
 .page-view .title {
 	height: 50px;
 	text-align: center;
@@ -84,8 +105,9 @@ h1 {
 
 .component-box {
 	position: relative;
-	width: calc(100% - 150px);
+	width: 200px;
 	float: left;
+	margin-left: 100px;
 }
 
 .component-tag {
@@ -94,7 +116,7 @@ h1 {
 	width: 100px;
 	overflow-y: hidden;
 	cursor: default;
-	margin: 0.5em 5em;
+	margin: 1em 2em;
 	background: rgba(0, 200, 255, 0.9);
 	text-align: center;
 	vertical-align: middle;
@@ -115,4 +137,11 @@ h1 {
 .bg .info {
 	padding-left: 300px;
 	display: none;
+}
+
+.tool {
+	z-index: 100;
+	position: fixed;
+	left: 50px;
+	top: 14px;
 }

@@ -85,7 +85,7 @@ export function create(data) {
 			headers: new Headers({
 				"content-type": "application/json",
 			}),
-			body: JSON.stringify({ code: 200, message: '完成' }),
+			body: JSON.stringify({ code: 200, message: '完成', src: `products/${data.name}` }),
 		});
 	})
 

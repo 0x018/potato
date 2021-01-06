@@ -1,4 +1,6 @@
-// let id = (Math.random() + "").replace("0.", "").slice(0, 5);
+import { onMount } from "svelte";
+export let url;
+let newPage = localStorage.getItem(`newPage`) || "# no match #";
 let name = 'home';
 let pageTag = [];
 let cptTag = [];
@@ -49,7 +51,11 @@ function getPosition(key, f) {
 			y: y,
 		}
 	}
-	else { console.error("dom 渲染未完成"); }
+	else {
+
+		console.error("dom 渲染未完成,请手动刷新.(一直出现则保存任意文件触发自动编译后正常)");
+		return { x: 0, y: 0 };
+	}
 }
 let line = [];
 let _draw = null;
@@ -100,8 +106,19 @@ fetch("assets/dpdc.json").then(r => r.json()).then(d => {
 		};
 		// if(v.type=="page") pageTag.push({name:low(v.name),src:})
 	});//.filter(v => !k.has(v.id) && k.set(v.id, 1));
-	pageTag = Array.from(p)
-	cptTag = Array.from(c)
+	pageTag = Array.from(p).sort();
+	cptTag = Array.from(c).sort();
 	dpdc = d;
 	drawLine();
 });
+
+function toEdit() {
+	pushState(null, "", "/#/edit");
+}
+onMount(async () => {
+	if (url.load) {
+		// 等待自动刷新通知 1.显示load 2.什么都不做等待reload被触发
+		let hash = (window.location.hash + "").replace("?load=true", "");
+		history.replaceState(null, "", hash);
+	}
+})

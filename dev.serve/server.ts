@@ -101,7 +101,7 @@ window.open = function (url) {
 }
 // if(Deno.args[0]==="open"){
 
-console.info('server', `http://localhost:${config.port}`);
+console.info('server', `http://localhost:${config.port}/#/home`);
 // window.open(`http://localhost:${config.port}`);
 // }
 

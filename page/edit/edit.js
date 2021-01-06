@@ -130,6 +130,7 @@ function createPage(form) {
   fetch("/page/", { method: 'PUT', body: JSON.stringify(data) }).then(r => r.json()).then(r => {
     if (r.code == 200) {
       show2.next(false);
+      localStorage.setItem(`newPage`, r.src);
       pushState(null, "", "/#/home/?load=true");
     }
     else {

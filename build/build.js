@@ -344,12 +344,13 @@ async function watchFile() {
 }
 let _fresh = null;
 fileWatch.pipe(
+  rx.operators.debounceTime(800),
   // rx.operators.bufferTime(800),
   rx.operators.distinctUntilChanged(),
-  rx.operators.delay(800),
+  // rx.operators.delay(800),
   rx.operators.filter(data => !!data),
   // rx.operators.map(v=>v.filter(a=>!!a)),
-  // rx.operators.debounceTime(800),
+  // 
   // rx.operators.switchMap(() => fileWatch.pipe(rx.operators.scan((acc, curr) => acc.add(curr), new Set())))
 ).subscribe(async (val) => {
   if (_fresh) { clearTimeout(_fresh); }
