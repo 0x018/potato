@@ -46,18 +46,23 @@
 
 3.页面生成步骤
 
+![img 流程](./doc/img/all.gif)
+
 3.1.选择和编辑grid布局
 
 ![img 布局](./doc/img/grid.gif)
 
 3.2.调整css和选择组件
 
-![img 布局](./doc/img/fill.gif)
+![img 样式](./doc/img/fill.css.gif)
+
+![img 组件](./doc/img/fill.cpt.gif)
 
 3.3.预览或生成页面
 
-![img 布局](./doc/img/create.gif)
+![img 生成](./doc/img/create.gif)
 
 3.4.添加业务逻辑
 
-![img 布局](./doc/img/coding.gif)
+开发人员在生成的基础代码上进行开发
+<!-- ![img 布局](./doc/img/coding.gif) -->
